@@ -15,6 +15,9 @@ type PostController struct{}
 
 // GET /posts
 func (pc PostController) Index(c *gin.Context) {
-	post := Post{Id: 1, Body: "Hello World!"}
+	post := []Post{
+		{Id: 1, Body: "Hello World!"},
+		{Id: 2, Body: "Hello Gin!"},
+	}
 	c.JSON(http.StatusOK, post)
 }
