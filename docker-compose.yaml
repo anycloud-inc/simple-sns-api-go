@@ -10,3 +10,22 @@ services:
     volumes:
       - ./api/src:/go/src
     tty: true
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0.22
+    platform: linux/x86_64
+    ports:
+      - "${DB_PORT:-3306}:3306"
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_DATABASE: simple_sns
+      MYSQL_USER: mysql
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - simple-sns-mysql-data:/var/lib/mysql
+
+volumes:
+  simple-sns-mysql-data:
