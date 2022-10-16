@@ -53,12 +53,18 @@ func (pu *PostUpdate) Save(ctx context.Context) (int, error) {
 		affected int
 	)
 	if len(pu.hooks) == 0 {
+		if err = pu.check(); err != nil {
+			return 0, err
+		}
 		affected, err = pu.sqlSave(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 			mutation, ok := m.(*PostMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			if err = pu.check(); err != nil {
+				return 0, err
 			}
 			pu.mutation = mutation
 			affected, err = pu.sqlSave(ctx)
@@ -98,6 +104,16 @@ func (pu *PostUpdate) ExecX(ctx context.Context) {
 	if err := pu.Exec(ctx); err != nil {
 		panic(err)
 	}
+}
+
+// check runs all checks and user-defined validators on the builder.
+func (pu *PostUpdate) check() error {
+	if v, ok := pu.mutation.Body(); ok {
+		if err := post.BodyValidator(v); err != nil {
+			return &ValidationError{Name: "body", err: fmt.Errorf(`ent: validator failed for field "Post.body": %w`, err)}
+		}
+	}
+	return nil
 }
 
 func (pu *PostUpdate) sqlSave(ctx context.Context) (n int, err error) {
@@ -177,12 +193,18 @@ func (puo *PostUpdateOne) Save(ctx context.Context) (*Post, error) {
 		node *Post
 	)
 	if len(puo.hooks) == 0 {
+		if err = puo.check(); err != nil {
+			return nil, err
+		}
 		node, err = puo.sqlSave(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 			mutation, ok := m.(*PostMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			if err = puo.check(); err != nil {
+				return nil, err
 			}
 			puo.mutation = mutation
 			node, err = puo.sqlSave(ctx)
@@ -228,6 +250,16 @@ func (puo *PostUpdateOne) ExecX(ctx context.Context) {
 	if err := puo.Exec(ctx); err != nil {
 		panic(err)
 	}
+}
+
+// check runs all checks and user-defined validators on the builder.
+func (puo *PostUpdateOne) check() error {
+	if v, ok := puo.mutation.Body(); ok {
+		if err := post.BodyValidator(v); err != nil {
+			return &ValidationError{Name: "body", err: fmt.Errorf(`ent: validator failed for field "Post.body": %w`, err)}
+		}
+	}
+	return nil
 }
 
 func (puo *PostUpdateOne) sqlSave(ctx context.Context) (_node *Post, err error) {

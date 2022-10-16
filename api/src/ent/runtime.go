@@ -17,4 +17,20 @@ func init() {
 	postDescBody := postFields[0].Descriptor()
 	// post.DefaultBody holds the default value on creation for the body field.
 	post.DefaultBody = postDescBody.Default.(string)
+	// post.BodyValidator is a validator for the "body" field. It is called by the builders before save.
+	post.BodyValidator = func() func(string) error {
+		validators := postDescBody.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(body string) error {
+			for _, fn := range fns {
+				if err := fn(body); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
 }

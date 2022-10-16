@@ -32,4 +32,6 @@ func ValidColumn(column string) bool {
 var (
 	// DefaultBody holds the default value on creation for the "body" field.
 	DefaultBody string
+	// BodyValidator is a validator for the "body" field. It is called by the builders before save.
+	BodyValidator func(string) error
 )

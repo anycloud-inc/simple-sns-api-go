@@ -11,7 +11,8 @@ services:
       - ./api/src:/go/src
     tty: true
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
   db:
     image: mysql:8.0.22
@@ -26,6 +27,10 @@ services:
       MYSQL_ROOT_PASSWORD: root
     volumes:
       - simple-sns-mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
 
 volumes:
   simple-sns-mysql-data:
