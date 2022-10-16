@@ -29,7 +29,7 @@ func (pc PostController) Create(ctx *gin.Context) {
 	body := ctx.PostFormMap("post")["body"]
 	post, err := db.Client.Post.Create().SetBody(body).Save(ctx)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"erro": err.Error()})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
 	ctx.JSON(http.StatusOK, post)
 }
