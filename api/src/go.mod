@@ -6,6 +6,8 @@ require (
 	entgo.io/ent v0.11.3
 	github.com/gin-gonic/gin v1.8.1
 	github.com/go-sql-driver/mysql v1.6.0
+	github.com/golang-jwt/jwt/v4 v4.4.2
+	github.com/mattn/go-sqlite3 v1.14.15
 )
 
 require (
