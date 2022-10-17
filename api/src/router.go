@@ -13,6 +13,7 @@ func router() *gin.Engine {
 		p := engine.Group("/posts")
 		controller := post.PostController{}
 		p.GET("", controller.Index)
+		p.POST("", controller.Create)
 	}
 
 	return engine

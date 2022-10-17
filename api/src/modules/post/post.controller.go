@@ -2,8 +2,10 @@ package post
 
 import (
 	"net/http"
+	"simple_sns_api/db"
 
 	"github.com/gin-gonic/gin"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 type Post struct {
@@ -14,10 +16,19 @@ type Post struct {
 type PostController struct{}
 
 // GET /posts
-func (pc PostController) Index(c *gin.Context) {
+func (pc PostController) Index(ctx *gin.Context) {
 	post := []Post{
 		{Id: 1, Body: "Hello World!"},
-		{Id: 2, Body: "Hello Gin!"},
+		{Id: 2, Body: "Hello Gin!!"},
 	}
-	c.JSON(http.StatusOK, post)
+	ctx.JSON(http.StatusOK, post)
+}
+
+// POST /posts
+func (pc PostController) Create(ctx *gin.Context) {
+	post, err := db.Client.Post.Create().SetBody("HOGE").Save(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+	ctx.JSON(http.StatusOK, post)
 }
