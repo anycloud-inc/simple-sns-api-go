@@ -4,7 +4,7 @@ import (
 	"context"
 	"simple_sns_api/db"
 	"simple_sns_api/ent"
-	"simple_sns_api/modules/auth"
+	"simple_sns_api/lib/auth"
 )
 
 type AccountService struct{}
