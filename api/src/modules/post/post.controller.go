@@ -17,11 +17,9 @@ type PostController struct{}
 
 // GET /posts
 func (pc PostController) Index(ctx *gin.Context) {
-	post := []Post{
-		{Id: 1, Body: "Hello World!"},
-		{Id: 2, Body: "Hello Gin!!"},
-	}
-	ctx.JSON(http.StatusOK, post)
+	// TODO: pagination
+	posts := db.Client.Post.Query().AllX(ctx)
+	ctx.JSON(http.StatusOK, gin.H{"posts": posts})
 }
 
 // POST /posts
