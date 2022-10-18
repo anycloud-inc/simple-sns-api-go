@@ -11,7 +11,7 @@ func router() *gin.Engine {
 
 	{
 		p := engine.Group("/posts")
-		controller := post.PostController{}
+		controller := post.Controller{}
 		p.GET("", controller.Index)
 		p.POST("", controller.Create)
 	}
