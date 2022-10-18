@@ -13,8 +13,7 @@ type Post struct {
 // Fields of the Post.
 func (Post) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("body").
-			Default(""),
+		field.String("body").Default("").NotEmpty().MaxLen((500)),
 	}
 }
 

@@ -121,6 +121,11 @@ func (pc *PostCreate) check() error {
 	if _, ok := pc.mutation.Body(); !ok {
 		return &ValidationError{Name: "body", err: errors.New(`ent: missing required field "Post.body"`)}
 	}
+	if v, ok := pc.mutation.Body(); ok {
+		if err := post.BodyValidator(v); err != nil {
+			return &ValidationError{Name: "body", err: fmt.Errorf(`ent: validator failed for field "Post.body": %w`, err)}
+		}
+	}
 	return nil
 }
 
