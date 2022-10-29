@@ -31,9 +31,21 @@ func TestCreateFailure(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
+	// Bodyが空なので失敗
 	post, err := PostService{}.Create(ctx, CreateParams{
 		UserId: user.ID,
 		Body:   "",
+	})
+	if post != nil {
+		t.Error("Post should be nil")
+	}
+	if err == nil {
+		t.Error("Err should exist")
+	}
+	// UserIdが不正なので失敗
+	post, err = PostService{}.Create(ctx, CreateParams{
+		UserId: -100,
+		Body:   "Hoge",
 	})
 	if post != nil {
 		t.Error("Post should be nil")
