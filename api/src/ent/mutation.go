@@ -6,9 +6,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"simple_sns_api/ent/post"
-	"simple_sns_api/ent/predicate"
-	"simple_sns_api/ent/user"
+	"simple_sns_api/src/ent/post"
+	"simple_sns_api/src/ent/predicate"
+	"simple_sns_api/src/ent/user"
 	"sync"
 
 	"entgo.io/ent"

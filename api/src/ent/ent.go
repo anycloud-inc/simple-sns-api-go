@@ -6,8 +6,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"simple_sns_api/ent/post"
-	"simple_sns_api/ent/user"
+	"simple_sns_api/src/ent/post"
+	"simple_sns_api/src/ent/user"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"

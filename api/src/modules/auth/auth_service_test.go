@@ -1,8 +1,8 @@
 package auth
 
 import (
-	"simple_sns_api/db"
-	"simple_sns_api/modules/account"
+	"simple_sns_api/src/db"
+	"simple_sns_api/src/modules/account"
 	"testing"
 )
 

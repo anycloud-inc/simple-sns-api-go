@@ -1,7 +1,7 @@
 package account
 
 import (
-	"simple_sns_api/db"
+	"simple_sns_api/src/db"
 	"testing"
 )
 

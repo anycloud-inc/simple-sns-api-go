@@ -3,7 +3,7 @@
 package user
 
 import (
-	"simple_sns_api/ent/predicate"
+	"simple_sns_api/src/ent/predicate"
 
 	"entgo.io/ent/dialect/sql"
 )

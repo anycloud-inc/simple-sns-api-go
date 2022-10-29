@@ -1,7 +1,7 @@
 package main
 
 import (
-	"simple_sns_api/modules/post"
+	"simple_sns_api/src/modules/post"
 
 	"github.com/gin-gonic/gin"
 )
