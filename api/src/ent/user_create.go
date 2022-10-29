@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"simple_sns_api/src/ent/post"
 	"simple_sns_api/src/ent/user"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -35,6 +36,21 @@ func (uc *UserCreate) SetEmail(s string) *UserCreate {
 func (uc *UserCreate) SetPassword(s string) *UserCreate {
 	uc.mutation.SetPassword(s)
 	return uc
+}
+
+// AddPostIDs adds the "posts" edge to the Post entity by IDs.
+func (uc *UserCreate) AddPostIDs(ids ...int) *UserCreate {
+	uc.mutation.AddPostIDs(ids...)
+	return uc
+}
+
+// AddPosts adds the "posts" edges to the Post entity.
+func (uc *UserCreate) AddPosts(p ...*Post) *UserCreate {
+	ids := make([]int, len(p))
+	for i := range p {
+		ids[i] = p[i].ID
+	}
+	return uc.AddPostIDs(ids...)
 }
 
 // Mutation returns the UserMutation object of the builder.
@@ -187,6 +203,25 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 			Column: user.FieldPassword,
 		})
 		_node.Password = value
+	}
+	if nodes := uc.mutation.PostsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.PostsTable,
+			Columns: []string{user.PostsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: post.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }

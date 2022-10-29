@@ -12,12 +12,21 @@ var (
 	PostsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "body", Type: field.TypeString, Size: 500, Default: ""},
+		{Name: "user_posts", Type: field.TypeInt},
 	}
 	// PostsTable holds the schema information for the "posts" table.
 	PostsTable = &schema.Table{
 		Name:       "posts",
 		Columns:    PostsColumns,
 		PrimaryKey: []*schema.Column{PostsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "posts_users_posts",
+				Columns:    []*schema.Column{PostsColumns[2]},
+				RefColumns: []*schema.Column{UsersColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
 	}
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
@@ -40,4 +49,5 @@ var (
 )
 
 func init() {
+	PostsTable.ForeignKeys[0].RefTable = UsersTable
 }
