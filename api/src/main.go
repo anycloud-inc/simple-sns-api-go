@@ -1,9 +1,8 @@
 package main
 
-import "simple_sns_api/db"
+import "simple_sns_api/src/db"
 
 func main() {
 	db.CreateConnection()
-	defer db.Client.Close()
-	router().Run()
+	defer router().Run()
 }

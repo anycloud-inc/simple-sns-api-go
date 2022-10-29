@@ -2,7 +2,7 @@ package post
 
 import (
 	"net/http"
-	"simple_sns_api/db"
+	"simple_sns_api/src/db"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"

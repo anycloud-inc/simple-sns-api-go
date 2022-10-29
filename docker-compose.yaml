@@ -4,11 +4,11 @@ services:
   api:
     build:
       context: .
-      dockerfile: ./api/Dockerfile
+      dockerfile: ./docker/api/Dockerfile
     ports:
       - "${API_PORT:-3030}:8080"
     volumes:
-      - ./api/src:/go/src
+      - ./api:/api
     tty: true
     depends_on:
       db:

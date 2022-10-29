@@ -4,11 +4,11 @@ package enttest
 
 import (
 	"context"
-	"simple_sns_api/ent"
+	"simple_sns_api/src/ent"
 	// required by schema hooks.
-	_ "simple_sns_api/ent/runtime"
+	_ "simple_sns_api/src/ent/runtime"
 
-	"simple_sns_api/ent/migrate"
+	"simple_sns_api/src/ent/migrate"
 
 	"entgo.io/ent/dialect/sql/schema"
 )

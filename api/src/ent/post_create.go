@@ -6,7 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"simple_sns_api/ent/post"
+	"simple_sns_api/src/ent/post"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"

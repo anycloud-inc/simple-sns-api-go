@@ -5,8 +5,8 @@ package ent
 import (
 	"context"
 	"fmt"
-	"simple_sns_api/ent/predicate"
-	"simple_sns_api/ent/user"
+	"simple_sns_api/src/ent/predicate"
+	"simple_sns_api/src/ent/user"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
