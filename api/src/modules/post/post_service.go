@@ -48,3 +48,7 @@ func (s PostService) Create(ctx context.Context, params CreateParams) (*ent.Post
 	}
 	return post, nil
 }
+
+func (s PostService) Delete(ctx context.Context, id int) error {
+	return db.Client.Post.DeleteOneID(id).Exec(ctx)
+}
