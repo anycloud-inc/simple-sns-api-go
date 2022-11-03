@@ -8,34 +8,6 @@ import (
 	"testing"
 )
 
-func TestFind(t *testing.T) {
-	ctx := db.CreateTestConnection(t)
-	user, _ := createAccount(ctx)
-
-	PostService{}.Create(ctx, CreateParams{UserId: user.ID, Body: "Hoge"})
-	PostService{}.Create(ctx, CreateParams{UserId: user.ID, Body: "Fuga"})
-	posts, err := PostService{}.find(ctx, PaginationParams{Size: 1})
-	if err != nil {
-		t.Error(err)
-	}
-	if len(posts) != 1 {
-		t.Error("Invalid size.")
-	}
-	if posts[0].Body != "Fuga" {
-		t.Error("Invalid body.")
-	}
-	posts, err = PostService{}.find(ctx, PaginationParams{Cursor: posts[0].ID, Size: 1})
-	if err != nil {
-		t.Error(err)
-	}
-	if len(posts) != 1 {
-		t.Error("Invalid size.")
-	}
-	if posts[0].Body != "Hoge" {
-		t.Error("Invalid body.")
-	}
-}
-
 func TestCreateSuccess(t *testing.T) {
 	ctx := db.CreateTestConnection(t)
 	user, err := createAccount(ctx)

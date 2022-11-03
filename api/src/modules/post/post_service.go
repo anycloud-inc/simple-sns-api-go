@@ -20,7 +20,7 @@ type CreateParams struct {
 }
 
 func (s PostService) find(ctx context.Context, pagination PaginationParams) ([]*ent.Post, error) {
-	query := db.Client.Post.Query()
+	query := db.Client.Post.Query().WithUser()
 	if pagination.Cursor != 0 {
 		query = query.Where(post.IDLT(pagination.Cursor))
 	}
@@ -32,6 +32,10 @@ func (s PostService) find(ctx context.Context, pagination PaginationParams) ([]*
 		Order(ent.Desc(post.FieldID)).
 		All(ctx)
 	return posts, err
+}
+
+func (s PostService) findOne(ctx context.Context, id int) (*ent.Post, error) {
+	return db.Client.Post.Query().WithUser().Where(post.ID(id)).First(ctx)
 }
 
 func (s PostService) Create(ctx context.Context, params CreateParams) (*ent.Post, error) {
