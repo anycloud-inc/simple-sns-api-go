@@ -38,6 +38,20 @@ func (uc *UserCreate) SetPassword(s string) *UserCreate {
 	return uc
 }
 
+// SetIconImageUrl sets the "iconImageUrl" field.
+func (uc *UserCreate) SetIconImageUrl(s string) *UserCreate {
+	uc.mutation.SetIconImageUrl(s)
+	return uc
+}
+
+// SetNillableIconImageUrl sets the "iconImageUrl" field if the given value is not nil.
+func (uc *UserCreate) SetNillableIconImageUrl(s *string) *UserCreate {
+	if s != nil {
+		uc.SetIconImageUrl(*s)
+	}
+	return uc
+}
+
 // AddPostIDs adds the "posts" edge to the Post entity by IDs.
 func (uc *UserCreate) AddPostIDs(ids ...int) *UserCreate {
 	uc.mutation.AddPostIDs(ids...)
@@ -64,6 +78,7 @@ func (uc *UserCreate) Save(ctx context.Context) (*User, error) {
 		err  error
 		node *User
 	)
+	uc.defaults()
 	if len(uc.hooks) == 0 {
 		if err = uc.check(); err != nil {
 			return nil, err
@@ -127,6 +142,14 @@ func (uc *UserCreate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (uc *UserCreate) defaults() {
+	if _, ok := uc.mutation.IconImageUrl(); !ok {
+		v := user.DefaultIconImageUrl
+		uc.mutation.SetIconImageUrl(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (uc *UserCreate) check() error {
 	if _, ok := uc.mutation.Name(); !ok {
@@ -152,6 +175,9 @@ func (uc *UserCreate) check() error {
 		if err := user.PasswordValidator(v); err != nil {
 			return &ValidationError{Name: "password", err: fmt.Errorf(`ent: validator failed for field "User.password": %w`, err)}
 		}
+	}
+	if _, ok := uc.mutation.IconImageUrl(); !ok {
+		return &ValidationError{Name: "iconImageUrl", err: errors.New(`ent: missing required field "User.iconImageUrl"`)}
 	}
 	return nil
 }
@@ -204,6 +230,14 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 		})
 		_node.Password = value
 	}
+	if value, ok := uc.mutation.IconImageUrl(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: user.FieldIconImageUrl,
+		})
+		_node.IconImageUrl = value
+	}
 	if nodes := uc.mutation.PostsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -240,6 +274,7 @@ func (ucb *UserCreateBulk) Save(ctx context.Context) ([]*User, error) {
 	for i := range ucb.builders {
 		func(i int, root context.Context) {
 			builder := ucb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*UserMutation)
 				if !ok {

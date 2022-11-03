@@ -101,6 +101,13 @@ func Password(v string) predicate.User {
 	})
 }
 
+// IconImageUrl applies equality check predicate on the "iconImageUrl" field. It's identical to IconImageUrlEQ.
+func IconImageUrl(v string) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldIconImageUrl), v))
+	})
+}
+
 // NameEQ applies the EQ predicate on the "name" field.
 func NameEQ(v string) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
@@ -395,6 +402,105 @@ func PasswordEqualFold(v string) predicate.User {
 func PasswordContainsFold(v string) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		s.Where(sql.ContainsFold(s.C(FieldPassword), v))
+	})
+}
+
+// IconImageUrlEQ applies the EQ predicate on the "iconImageUrl" field.
+func IconImageUrlEQ(v string) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldIconImageUrl), v))
+	})
+}
+
+// IconImageUrlNEQ applies the NEQ predicate on the "iconImageUrl" field.
+func IconImageUrlNEQ(v string) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldIconImageUrl), v))
+	})
+}
+
+// IconImageUrlIn applies the In predicate on the "iconImageUrl" field.
+func IconImageUrlIn(vs ...string) predicate.User {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldIconImageUrl), v...))
+	})
+}
+
+// IconImageUrlNotIn applies the NotIn predicate on the "iconImageUrl" field.
+func IconImageUrlNotIn(vs ...string) predicate.User {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldIconImageUrl), v...))
+	})
+}
+
+// IconImageUrlGT applies the GT predicate on the "iconImageUrl" field.
+func IconImageUrlGT(v string) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldIconImageUrl), v))
+	})
+}
+
+// IconImageUrlGTE applies the GTE predicate on the "iconImageUrl" field.
+func IconImageUrlGTE(v string) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldIconImageUrl), v))
+	})
+}
+
+// IconImageUrlLT applies the LT predicate on the "iconImageUrl" field.
+func IconImageUrlLT(v string) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldIconImageUrl), v))
+	})
+}
+
+// IconImageUrlLTE applies the LTE predicate on the "iconImageUrl" field.
+func IconImageUrlLTE(v string) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldIconImageUrl), v))
+	})
+}
+
+// IconImageUrlContains applies the Contains predicate on the "iconImageUrl" field.
+func IconImageUrlContains(v string) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldIconImageUrl), v))
+	})
+}
+
+// IconImageUrlHasPrefix applies the HasPrefix predicate on the "iconImageUrl" field.
+func IconImageUrlHasPrefix(v string) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldIconImageUrl), v))
+	})
+}
+
+// IconImageUrlHasSuffix applies the HasSuffix predicate on the "iconImageUrl" field.
+func IconImageUrlHasSuffix(v string) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldIconImageUrl), v))
+	})
+}
+
+// IconImageUrlEqualFold applies the EqualFold predicate on the "iconImageUrl" field.
+func IconImageUrlEqualFold(v string) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldIconImageUrl), v))
+	})
+}
+
+// IconImageUrlContainsFold applies the ContainsFold predicate on the "iconImageUrl" field.
+func IconImageUrlContainsFold(v string) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldIconImageUrl), v))
 	})
 }
 
