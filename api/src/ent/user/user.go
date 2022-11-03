@@ -13,6 +13,8 @@ const (
 	FieldEmail = "email"
 	// FieldPassword holds the string denoting the password field in the database.
 	FieldPassword = "password"
+	// FieldIconImageUrl holds the string denoting the iconimageurl field in the database.
+	FieldIconImageUrl = "icon_image_url"
 	// EdgePosts holds the string denoting the posts edge name in mutations.
 	EdgePosts = "posts"
 	// Table holds the table name of the user in the database.
@@ -32,6 +34,7 @@ var Columns = []string{
 	FieldName,
 	FieldEmail,
 	FieldPassword,
+	FieldIconImageUrl,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -51,4 +54,6 @@ var (
 	EmailValidator func(string) error
 	// PasswordValidator is a validator for the "password" field. It is called by the builders before save.
 	PasswordValidator func(string) error
+	// DefaultIconImageUrl holds the default value on creation for the "iconImageUrl" field.
+	DefaultIconImageUrl string
 )

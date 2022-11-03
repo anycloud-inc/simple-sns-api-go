@@ -34,6 +34,7 @@ var (
 		{Name: "name", Type: field.TypeString, Size: 100},
 		{Name: "email", Type: field.TypeString, Size: 100},
 		{Name: "password", Type: field.TypeString, Size: 100},
+		{Name: "icon_image_url", Type: field.TypeString, Default: ""},
 	}
 	// UsersTable holds the schema information for the "users" table.
 	UsersTable = &schema.Table{

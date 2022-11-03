@@ -46,6 +46,20 @@ func (uu *UserUpdate) SetPassword(s string) *UserUpdate {
 	return uu
 }
 
+// SetIconImageUrl sets the "iconImageUrl" field.
+func (uu *UserUpdate) SetIconImageUrl(s string) *UserUpdate {
+	uu.mutation.SetIconImageUrl(s)
+	return uu
+}
+
+// SetNillableIconImageUrl sets the "iconImageUrl" field if the given value is not nil.
+func (uu *UserUpdate) SetNillableIconImageUrl(s *string) *UserUpdate {
+	if s != nil {
+		uu.SetIconImageUrl(*s)
+	}
+	return uu
+}
+
 // AddPostIDs adds the "posts" edge to the Post entity by IDs.
 func (uu *UserUpdate) AddPostIDs(ids ...int) *UserUpdate {
 	uu.mutation.AddPostIDs(ids...)
@@ -206,6 +220,13 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: user.FieldPassword,
 		})
 	}
+	if value, ok := uu.mutation.IconImageUrl(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: user.FieldIconImageUrl,
+		})
+	}
 	if uu.mutation.PostsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -294,6 +315,20 @@ func (uuo *UserUpdateOne) SetEmail(s string) *UserUpdateOne {
 // SetPassword sets the "password" field.
 func (uuo *UserUpdateOne) SetPassword(s string) *UserUpdateOne {
 	uuo.mutation.SetPassword(s)
+	return uuo
+}
+
+// SetIconImageUrl sets the "iconImageUrl" field.
+func (uuo *UserUpdateOne) SetIconImageUrl(s string) *UserUpdateOne {
+	uuo.mutation.SetIconImageUrl(s)
+	return uuo
+}
+
+// SetNillableIconImageUrl sets the "iconImageUrl" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableIconImageUrl(s *string) *UserUpdateOne {
+	if s != nil {
+		uuo.SetIconImageUrl(*s)
+	}
 	return uuo
 }
 
@@ -485,6 +520,13 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 			Type:   field.TypeString,
 			Value:  value,
 			Column: user.FieldPassword,
+		})
+	}
+	if value, ok := uuo.mutation.IconImageUrl(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: user.FieldIconImageUrl,
 		})
 	}
 	if uuo.mutation.PostsCleared() {

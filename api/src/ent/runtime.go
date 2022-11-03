@@ -91,4 +91,8 @@ func init() {
 			return nil
 		}
 	}()
+	// userDescIconImageUrl is the schema descriptor for iconImageUrl field.
+	userDescIconImageUrl := userFields[3].Descriptor()
+	// user.DefaultIconImageUrl holds the default value on creation for the iconImageUrl field.
+	user.DefaultIconImageUrl = userDescIconImageUrl.Default.(string)
 }
