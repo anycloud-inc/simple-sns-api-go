@@ -4,6 +4,7 @@ import (
 	"context"
 	"simple_sns_api/src/db"
 	"simple_sns_api/src/ent"
+	"simple_sns_api/src/ent/user"
 	"simple_sns_api/src/lib/auth"
 )
 
@@ -34,4 +35,8 @@ func (as AccountService) Register(ctx context.Context, params RegisterParams) (*
 	}
 
 	return user, authToken, nil
+}
+
+func (as AccountService) Find(ctx context.Context, userId int) (*ent.User, error) {
+	return db.Client.User.Query().Where(user.ID(userId)).First(ctx)
 }
