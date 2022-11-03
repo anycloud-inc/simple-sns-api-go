@@ -16,6 +16,11 @@ type RegisterParams struct {
 	Password string
 }
 
+type UpdateParams struct {
+	Name  string
+	Email string
+}
+
 func (as AccountService) Register(ctx context.Context, params RegisterParams) (*ent.User, auth.AuthToken, error) {
 	encrypted, err := auth.EncryptPassword(params.Password)
 	if err != nil {
@@ -35,6 +40,21 @@ func (as AccountService) Register(ctx context.Context, params RegisterParams) (*
 	}
 
 	return user, authToken, nil
+}
+
+func (as AccountService) Update(ctx context.Context, userId int, params UpdateParams) (*ent.User, error) {
+	qb := db.Client.User.UpdateOneID(userId)
+	if params.Name != "" {
+		qb = qb.SetName(params.Name)
+	}
+	if params.Email != "" {
+		qb = qb.SetEmail(params.Email)
+	}
+	err := qb.Exec(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return as.Find(ctx, userId)
 }
 
 func (as AccountService) Find(ctx context.Context, userId int) (*ent.User, error) {
