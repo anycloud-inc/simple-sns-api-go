@@ -66,9 +66,35 @@ func (mu *MessageUpdate) SetUpdatedAt(t time.Time) *MessageUpdate {
 	return mu
 }
 
-// SetRoomID sets the "room" edge to the Room entity by ID.
-func (mu *MessageUpdate) SetRoomID(id uuid.UUID) *MessageUpdate {
-	mu.mutation.SetRoomID(id)
+// SetRoomID sets the "room_id" field.
+func (mu *MessageUpdate) SetRoomID(u uuid.UUID) *MessageUpdate {
+	mu.mutation.SetRoomID(u)
+	return mu
+}
+
+// SetUserID sets the "user_id" field.
+func (mu *MessageUpdate) SetUserID(i int) *MessageUpdate {
+	mu.mutation.SetUserID(i)
+	return mu
+}
+
+// SetPostID sets the "post_id" field.
+func (mu *MessageUpdate) SetPostID(i int) *MessageUpdate {
+	mu.mutation.SetPostID(i)
+	return mu
+}
+
+// SetNillablePostID sets the "post_id" field if the given value is not nil.
+func (mu *MessageUpdate) SetNillablePostID(i *int) *MessageUpdate {
+	if i != nil {
+		mu.SetPostID(*i)
+	}
+	return mu
+}
+
+// ClearPostID clears the value of the "post_id" field.
+func (mu *MessageUpdate) ClearPostID() *MessageUpdate {
+	mu.mutation.ClearPostID()
 	return mu
 }
 
@@ -77,29 +103,9 @@ func (mu *MessageUpdate) SetRoom(r *Room) *MessageUpdate {
 	return mu.SetRoomID(r.ID)
 }
 
-// SetUserID sets the "user" edge to the User entity by ID.
-func (mu *MessageUpdate) SetUserID(id int) *MessageUpdate {
-	mu.mutation.SetUserID(id)
-	return mu
-}
-
 // SetUser sets the "user" edge to the User entity.
 func (mu *MessageUpdate) SetUser(u *User) *MessageUpdate {
 	return mu.SetUserID(u.ID)
-}
-
-// SetPostID sets the "post" edge to the Post entity by ID.
-func (mu *MessageUpdate) SetPostID(id int) *MessageUpdate {
-	mu.mutation.SetPostID(id)
-	return mu
-}
-
-// SetNillablePostID sets the "post" edge to the Post entity by ID if the given value is not nil.
-func (mu *MessageUpdate) SetNillablePostID(id *int) *MessageUpdate {
-	if id != nil {
-		mu = mu.SetPostID(*id)
-	}
-	return mu
 }
 
 // SetPost sets the "post" edge to the Post entity.
@@ -412,9 +418,35 @@ func (muo *MessageUpdateOne) SetUpdatedAt(t time.Time) *MessageUpdateOne {
 	return muo
 }
 
-// SetRoomID sets the "room" edge to the Room entity by ID.
-func (muo *MessageUpdateOne) SetRoomID(id uuid.UUID) *MessageUpdateOne {
-	muo.mutation.SetRoomID(id)
+// SetRoomID sets the "room_id" field.
+func (muo *MessageUpdateOne) SetRoomID(u uuid.UUID) *MessageUpdateOne {
+	muo.mutation.SetRoomID(u)
+	return muo
+}
+
+// SetUserID sets the "user_id" field.
+func (muo *MessageUpdateOne) SetUserID(i int) *MessageUpdateOne {
+	muo.mutation.SetUserID(i)
+	return muo
+}
+
+// SetPostID sets the "post_id" field.
+func (muo *MessageUpdateOne) SetPostID(i int) *MessageUpdateOne {
+	muo.mutation.SetPostID(i)
+	return muo
+}
+
+// SetNillablePostID sets the "post_id" field if the given value is not nil.
+func (muo *MessageUpdateOne) SetNillablePostID(i *int) *MessageUpdateOne {
+	if i != nil {
+		muo.SetPostID(*i)
+	}
+	return muo
+}
+
+// ClearPostID clears the value of the "post_id" field.
+func (muo *MessageUpdateOne) ClearPostID() *MessageUpdateOne {
+	muo.mutation.ClearPostID()
 	return muo
 }
 
@@ -423,29 +455,9 @@ func (muo *MessageUpdateOne) SetRoom(r *Room) *MessageUpdateOne {
 	return muo.SetRoomID(r.ID)
 }
 
-// SetUserID sets the "user" edge to the User entity by ID.
-func (muo *MessageUpdateOne) SetUserID(id int) *MessageUpdateOne {
-	muo.mutation.SetUserID(id)
-	return muo
-}
-
 // SetUser sets the "user" edge to the User entity.
 func (muo *MessageUpdateOne) SetUser(u *User) *MessageUpdateOne {
 	return muo.SetUserID(u.ID)
-}
-
-// SetPostID sets the "post" edge to the Post entity by ID.
-func (muo *MessageUpdateOne) SetPostID(id int) *MessageUpdateOne {
-	muo.mutation.SetPostID(id)
-	return muo
-}
-
-// SetNillablePostID sets the "post" edge to the Post entity by ID if the given value is not nil.
-func (muo *MessageUpdateOne) SetNillablePostID(id *int) *MessageUpdateOne {
-	if id != nil {
-		muo = muo.SetPostID(*id)
-	}
-	return muo
 }
 
 // SetPost sets the "post" edge to the Post entity.

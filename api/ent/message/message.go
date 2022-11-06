@@ -17,6 +17,12 @@ const (
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
+	// FieldRoomID holds the string denoting the room_id field in the database.
+	FieldRoomID = "room_id"
+	// FieldUserID holds the string denoting the user_id field in the database.
+	FieldUserID = "user_id"
+	// FieldPostID holds the string denoting the post_id field in the database.
+	FieldPostID = "post_id"
 	// EdgeRoom holds the string denoting the room edge name in mutations.
 	EdgeRoom = "room"
 	// EdgeUser holds the string denoting the user edge name in mutations.
@@ -31,21 +37,21 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "room" package.
 	RoomInverseTable = "rooms"
 	// RoomColumn is the table column denoting the room relation/edge.
-	RoomColumn = "room_messages"
+	RoomColumn = "room_id"
 	// UserTable is the table that holds the user relation/edge.
 	UserTable = "messages"
 	// UserInverseTable is the table name for the User entity.
 	// It exists in this package in order to avoid circular dependency with the "user" package.
 	UserInverseTable = "users"
 	// UserColumn is the table column denoting the user relation/edge.
-	UserColumn = "user_messages"
+	UserColumn = "user_id"
 	// PostTable is the table that holds the post relation/edge.
 	PostTable = "messages"
 	// PostInverseTable is the table name for the Post entity.
 	// It exists in this package in order to avoid circular dependency with the "post" package.
 	PostInverseTable = "posts"
 	// PostColumn is the table column denoting the post relation/edge.
-	PostColumn = "post_messages"
+	PostColumn = "post_id"
 )
 
 // Columns holds all SQL columns for message fields.
@@ -54,25 +60,15 @@ var Columns = []string{
 	FieldContent,
 	FieldCreatedAt,
 	FieldUpdatedAt,
-}
-
-// ForeignKeys holds the SQL foreign-keys that are owned by the "messages"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"post_messages",
-	"room_messages",
-	"user_messages",
+	FieldRoomID,
+	FieldUserID,
+	FieldPostID,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
-			return true
-		}
-	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
 			return true
 		}
 	}

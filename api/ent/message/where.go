@@ -8,6 +8,7 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"github.com/google/uuid"
 )
 
 // ID filters vertices based on their ID field.
@@ -99,6 +100,27 @@ func CreatedAt(v time.Time) predicate.Message {
 func UpdatedAt(v time.Time) predicate.Message {
 	return predicate.Message(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldUpdatedAt), v))
+	})
+}
+
+// RoomID applies equality check predicate on the "room_id" field. It's identical to RoomIDEQ.
+func RoomID(v uuid.UUID) predicate.Message {
+	return predicate.Message(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldRoomID), v))
+	})
+}
+
+// UserID applies equality check predicate on the "user_id" field. It's identical to UserIDEQ.
+func UserID(v int) predicate.Message {
+	return predicate.Message(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldUserID), v))
+	})
+}
+
+// PostID applies equality check predicate on the "post_id" field. It's identical to PostIDEQ.
+func PostID(v int) predicate.Message {
+	return predicate.Message(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldPostID), v))
 	})
 }
 
@@ -326,6 +348,128 @@ func UpdatedAtLT(v time.Time) predicate.Message {
 func UpdatedAtLTE(v time.Time) predicate.Message {
 	return predicate.Message(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldUpdatedAt), v))
+	})
+}
+
+// RoomIDEQ applies the EQ predicate on the "room_id" field.
+func RoomIDEQ(v uuid.UUID) predicate.Message {
+	return predicate.Message(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldRoomID), v))
+	})
+}
+
+// RoomIDNEQ applies the NEQ predicate on the "room_id" field.
+func RoomIDNEQ(v uuid.UUID) predicate.Message {
+	return predicate.Message(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldRoomID), v))
+	})
+}
+
+// RoomIDIn applies the In predicate on the "room_id" field.
+func RoomIDIn(vs ...uuid.UUID) predicate.Message {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Message(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldRoomID), v...))
+	})
+}
+
+// RoomIDNotIn applies the NotIn predicate on the "room_id" field.
+func RoomIDNotIn(vs ...uuid.UUID) predicate.Message {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Message(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldRoomID), v...))
+	})
+}
+
+// UserIDEQ applies the EQ predicate on the "user_id" field.
+func UserIDEQ(v int) predicate.Message {
+	return predicate.Message(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldUserID), v))
+	})
+}
+
+// UserIDNEQ applies the NEQ predicate on the "user_id" field.
+func UserIDNEQ(v int) predicate.Message {
+	return predicate.Message(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldUserID), v))
+	})
+}
+
+// UserIDIn applies the In predicate on the "user_id" field.
+func UserIDIn(vs ...int) predicate.Message {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Message(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldUserID), v...))
+	})
+}
+
+// UserIDNotIn applies the NotIn predicate on the "user_id" field.
+func UserIDNotIn(vs ...int) predicate.Message {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Message(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldUserID), v...))
+	})
+}
+
+// PostIDEQ applies the EQ predicate on the "post_id" field.
+func PostIDEQ(v int) predicate.Message {
+	return predicate.Message(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldPostID), v))
+	})
+}
+
+// PostIDNEQ applies the NEQ predicate on the "post_id" field.
+func PostIDNEQ(v int) predicate.Message {
+	return predicate.Message(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldPostID), v))
+	})
+}
+
+// PostIDIn applies the In predicate on the "post_id" field.
+func PostIDIn(vs ...int) predicate.Message {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Message(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldPostID), v...))
+	})
+}
+
+// PostIDNotIn applies the NotIn predicate on the "post_id" field.
+func PostIDNotIn(vs ...int) predicate.Message {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Message(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldPostID), v...))
+	})
+}
+
+// PostIDIsNil applies the IsNil predicate on the "post_id" field.
+func PostIDIsNil() predicate.Message {
+	return predicate.Message(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldPostID)))
+	})
+}
+
+// PostIDNotNil applies the NotNil predicate on the "post_id" field.
+func PostIDNotNil() predicate.Message {
+	return predicate.Message(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldPostID)))
 	})
 }
 

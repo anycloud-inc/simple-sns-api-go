@@ -23,11 +23,13 @@ type RoomUser struct {
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
+	// RoomID holds the value of the "room_id" field.
+	RoomID uuid.UUID `json:"room_id,omitempty"`
+	// UserID holds the value of the "user_id" field.
+	UserID int `json:"user_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the RoomUserQuery when eager-loading is set.
-	Edges           RoomUserEdges `json:"edges"`
-	room_room_users *uuid.UUID
-	user_room_users *int
+	Edges RoomUserEdges `json:"edges"`
 }
 
 // RoomUserEdges holds the relations/edges for other nodes in the graph.
@@ -72,14 +74,12 @@ func (*RoomUser) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case roomuser.FieldID:
+		case roomuser.FieldID, roomuser.FieldUserID:
 			values[i] = new(sql.NullInt64)
 		case roomuser.FieldCreatedAt, roomuser.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
-		case roomuser.ForeignKeys[0]: // room_room_users
-			values[i] = &sql.NullScanner{S: new(uuid.UUID)}
-		case roomuser.ForeignKeys[1]: // user_room_users
-			values[i] = new(sql.NullInt64)
+		case roomuser.FieldRoomID:
+			values[i] = new(uuid.UUID)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type RoomUser", columns[i])
 		}
@@ -113,19 +113,17 @@ func (ru *RoomUser) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				ru.UpdatedAt = value.Time
 			}
-		case roomuser.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullScanner); !ok {
-				return fmt.Errorf("unexpected type %T for field room_room_users", values[i])
-			} else if value.Valid {
-				ru.room_room_users = new(uuid.UUID)
-				*ru.room_room_users = *value.S.(*uuid.UUID)
+		case roomuser.FieldRoomID:
+			if value, ok := values[i].(*uuid.UUID); !ok {
+				return fmt.Errorf("unexpected type %T for field room_id", values[i])
+			} else if value != nil {
+				ru.RoomID = *value
 			}
-		case roomuser.ForeignKeys[1]:
+		case roomuser.FieldUserID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field user_room_users", value)
+				return fmt.Errorf("unexpected type %T for field user_id", values[i])
 			} else if value.Valid {
-				ru.user_room_users = new(int)
-				*ru.user_room_users = int(value.Int64)
+				ru.UserID = int(value.Int64)
 			}
 		}
 	}
@@ -170,6 +168,12 @@ func (ru *RoomUser) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
 	builder.WriteString(ru.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("room_id=")
+	builder.WriteString(fmt.Sprintf("%v", ru.RoomID))
+	builder.WriteString(", ")
+	builder.WriteString("user_id=")
+	builder.WriteString(fmt.Sprintf("%v", ru.UserID))
 	builder.WriteByte(')')
 	return builder.String()
 }

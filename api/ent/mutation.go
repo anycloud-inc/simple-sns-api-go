@@ -263,9 +263,125 @@ func (m *MessageMutation) ResetUpdatedAt() {
 	m.updated_at = nil
 }
 
-// SetRoomID sets the "room" edge to the Room entity by id.
-func (m *MessageMutation) SetRoomID(id uuid.UUID) {
-	m.room = &id
+// SetRoomID sets the "room_id" field.
+func (m *MessageMutation) SetRoomID(u uuid.UUID) {
+	m.room = &u
+}
+
+// RoomID returns the value of the "room_id" field in the mutation.
+func (m *MessageMutation) RoomID() (r uuid.UUID, exists bool) {
+	v := m.room
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRoomID returns the old "room_id" field's value of the Message entity.
+// If the Message object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MessageMutation) OldRoomID(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRoomID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRoomID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRoomID: %w", err)
+	}
+	return oldValue.RoomID, nil
+}
+
+// ResetRoomID resets all changes to the "room_id" field.
+func (m *MessageMutation) ResetRoomID() {
+	m.room = nil
+}
+
+// SetUserID sets the "user_id" field.
+func (m *MessageMutation) SetUserID(i int) {
+	m.user = &i
+}
+
+// UserID returns the value of the "user_id" field in the mutation.
+func (m *MessageMutation) UserID() (r int, exists bool) {
+	v := m.user
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUserID returns the old "user_id" field's value of the Message entity.
+// If the Message object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MessageMutation) OldUserID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUserID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUserID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUserID: %w", err)
+	}
+	return oldValue.UserID, nil
+}
+
+// ResetUserID resets all changes to the "user_id" field.
+func (m *MessageMutation) ResetUserID() {
+	m.user = nil
+}
+
+// SetPostID sets the "post_id" field.
+func (m *MessageMutation) SetPostID(i int) {
+	m.post = &i
+}
+
+// PostID returns the value of the "post_id" field in the mutation.
+func (m *MessageMutation) PostID() (r int, exists bool) {
+	v := m.post
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPostID returns the old "post_id" field's value of the Message entity.
+// If the Message object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *MessageMutation) OldPostID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPostID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPostID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPostID: %w", err)
+	}
+	return oldValue.PostID, nil
+}
+
+// ClearPostID clears the value of the "post_id" field.
+func (m *MessageMutation) ClearPostID() {
+	m.post = nil
+	m.clearedFields[message.FieldPostID] = struct{}{}
+}
+
+// PostIDCleared returns if the "post_id" field was cleared in this mutation.
+func (m *MessageMutation) PostIDCleared() bool {
+	_, ok := m.clearedFields[message.FieldPostID]
+	return ok
+}
+
+// ResetPostID resets all changes to the "post_id" field.
+func (m *MessageMutation) ResetPostID() {
+	m.post = nil
+	delete(m.clearedFields, message.FieldPostID)
 }
 
 // ClearRoom clears the "room" edge to the Room entity.
@@ -276,14 +392,6 @@ func (m *MessageMutation) ClearRoom() {
 // RoomCleared reports if the "room" edge to the Room entity was cleared.
 func (m *MessageMutation) RoomCleared() bool {
 	return m.clearedroom
-}
-
-// RoomID returns the "room" edge ID in the mutation.
-func (m *MessageMutation) RoomID() (id uuid.UUID, exists bool) {
-	if m.room != nil {
-		return *m.room, true
-	}
-	return
 }
 
 // RoomIDs returns the "room" edge IDs in the mutation.
@@ -302,11 +410,6 @@ func (m *MessageMutation) ResetRoom() {
 	m.clearedroom = false
 }
 
-// SetUserID sets the "user" edge to the User entity by id.
-func (m *MessageMutation) SetUserID(id int) {
-	m.user = &id
-}
-
 // ClearUser clears the "user" edge to the User entity.
 func (m *MessageMutation) ClearUser() {
 	m.cleareduser = true
@@ -315,14 +418,6 @@ func (m *MessageMutation) ClearUser() {
 // UserCleared reports if the "user" edge to the User entity was cleared.
 func (m *MessageMutation) UserCleared() bool {
 	return m.cleareduser
-}
-
-// UserID returns the "user" edge ID in the mutation.
-func (m *MessageMutation) UserID() (id int, exists bool) {
-	if m.user != nil {
-		return *m.user, true
-	}
-	return
 }
 
 // UserIDs returns the "user" edge IDs in the mutation.
@@ -341,11 +436,6 @@ func (m *MessageMutation) ResetUser() {
 	m.cleareduser = false
 }
 
-// SetPostID sets the "post" edge to the Post entity by id.
-func (m *MessageMutation) SetPostID(id int) {
-	m.post = &id
-}
-
 // ClearPost clears the "post" edge to the Post entity.
 func (m *MessageMutation) ClearPost() {
 	m.clearedpost = true
@@ -353,15 +443,7 @@ func (m *MessageMutation) ClearPost() {
 
 // PostCleared reports if the "post" edge to the Post entity was cleared.
 func (m *MessageMutation) PostCleared() bool {
-	return m.clearedpost
-}
-
-// PostID returns the "post" edge ID in the mutation.
-func (m *MessageMutation) PostID() (id int, exists bool) {
-	if m.post != nil {
-		return *m.post, true
-	}
-	return
+	return m.PostIDCleared() || m.clearedpost
 }
 
 // PostIDs returns the "post" edge IDs in the mutation.
@@ -399,7 +481,7 @@ func (m *MessageMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *MessageMutation) Fields() []string {
-	fields := make([]string, 0, 3)
+	fields := make([]string, 0, 6)
 	if m.content != nil {
 		fields = append(fields, message.FieldContent)
 	}
@@ -408,6 +490,15 @@ func (m *MessageMutation) Fields() []string {
 	}
 	if m.updated_at != nil {
 		fields = append(fields, message.FieldUpdatedAt)
+	}
+	if m.room != nil {
+		fields = append(fields, message.FieldRoomID)
+	}
+	if m.user != nil {
+		fields = append(fields, message.FieldUserID)
+	}
+	if m.post != nil {
+		fields = append(fields, message.FieldPostID)
 	}
 	return fields
 }
@@ -423,6 +514,12 @@ func (m *MessageMutation) Field(name string) (ent.Value, bool) {
 		return m.CreatedAt()
 	case message.FieldUpdatedAt:
 		return m.UpdatedAt()
+	case message.FieldRoomID:
+		return m.RoomID()
+	case message.FieldUserID:
+		return m.UserID()
+	case message.FieldPostID:
+		return m.PostID()
 	}
 	return nil, false
 }
@@ -438,6 +535,12 @@ func (m *MessageMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldCreatedAt(ctx)
 	case message.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
+	case message.FieldRoomID:
+		return m.OldRoomID(ctx)
+	case message.FieldUserID:
+		return m.OldUserID(ctx)
+	case message.FieldPostID:
+		return m.OldPostID(ctx)
 	}
 	return nil, fmt.Errorf("unknown Message field %s", name)
 }
@@ -468,6 +571,27 @@ func (m *MessageMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetUpdatedAt(v)
 		return nil
+	case message.FieldRoomID:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRoomID(v)
+		return nil
+	case message.FieldUserID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUserID(v)
+		return nil
+	case message.FieldPostID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPostID(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Message field %s", name)
 }
@@ -475,13 +599,16 @@ func (m *MessageMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
 func (m *MessageMutation) AddedFields() []string {
-	return nil
+	var fields []string
+	return fields
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
 func (m *MessageMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	}
 	return nil, false
 }
 
@@ -497,7 +624,11 @@ func (m *MessageMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *MessageMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(message.FieldPostID) {
+		fields = append(fields, message.FieldPostID)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -510,6 +641,11 @@ func (m *MessageMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *MessageMutation) ClearField(name string) error {
+	switch name {
+	case message.FieldPostID:
+		m.ClearPostID()
+		return nil
+	}
 	return fmt.Errorf("unknown Message nullable field %s", name)
 }
 
@@ -525,6 +661,15 @@ func (m *MessageMutation) ResetField(name string) error {
 		return nil
 	case message.FieldUpdatedAt:
 		m.ResetUpdatedAt()
+		return nil
+	case message.FieldRoomID:
+		m.ResetRoomID()
+		return nil
+	case message.FieldUserID:
+		m.ResetUserID()
+		return nil
+	case message.FieldPostID:
+		m.ResetPostID()
 		return nil
 	}
 	return fmt.Errorf("unknown Message field %s", name)
@@ -2000,9 +2145,76 @@ func (m *RoomUserMutation) ResetUpdatedAt() {
 	m.updated_at = nil
 }
 
-// SetRoomID sets the "room" edge to the Room entity by id.
-func (m *RoomUserMutation) SetRoomID(id uuid.UUID) {
-	m.room = &id
+// SetRoomID sets the "room_id" field.
+func (m *RoomUserMutation) SetRoomID(u uuid.UUID) {
+	m.room = &u
+}
+
+// RoomID returns the value of the "room_id" field in the mutation.
+func (m *RoomUserMutation) RoomID() (r uuid.UUID, exists bool) {
+	v := m.room
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRoomID returns the old "room_id" field's value of the RoomUser entity.
+// If the RoomUser object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RoomUserMutation) OldRoomID(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRoomID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRoomID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRoomID: %w", err)
+	}
+	return oldValue.RoomID, nil
+}
+
+// ResetRoomID resets all changes to the "room_id" field.
+func (m *RoomUserMutation) ResetRoomID() {
+	m.room = nil
+}
+
+// SetUserID sets the "user_id" field.
+func (m *RoomUserMutation) SetUserID(i int) {
+	m.user = &i
+}
+
+// UserID returns the value of the "user_id" field in the mutation.
+func (m *RoomUserMutation) UserID() (r int, exists bool) {
+	v := m.user
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUserID returns the old "user_id" field's value of the RoomUser entity.
+// If the RoomUser object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RoomUserMutation) OldUserID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUserID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUserID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUserID: %w", err)
+	}
+	return oldValue.UserID, nil
+}
+
+// ResetUserID resets all changes to the "user_id" field.
+func (m *RoomUserMutation) ResetUserID() {
+	m.user = nil
 }
 
 // ClearRoom clears the "room" edge to the Room entity.
@@ -2013,14 +2225,6 @@ func (m *RoomUserMutation) ClearRoom() {
 // RoomCleared reports if the "room" edge to the Room entity was cleared.
 func (m *RoomUserMutation) RoomCleared() bool {
 	return m.clearedroom
-}
-
-// RoomID returns the "room" edge ID in the mutation.
-func (m *RoomUserMutation) RoomID() (id uuid.UUID, exists bool) {
-	if m.room != nil {
-		return *m.room, true
-	}
-	return
 }
 
 // RoomIDs returns the "room" edge IDs in the mutation.
@@ -2039,11 +2243,6 @@ func (m *RoomUserMutation) ResetRoom() {
 	m.clearedroom = false
 }
 
-// SetUserID sets the "user" edge to the User entity by id.
-func (m *RoomUserMutation) SetUserID(id int) {
-	m.user = &id
-}
-
 // ClearUser clears the "user" edge to the User entity.
 func (m *RoomUserMutation) ClearUser() {
 	m.cleareduser = true
@@ -2052,14 +2251,6 @@ func (m *RoomUserMutation) ClearUser() {
 // UserCleared reports if the "user" edge to the User entity was cleared.
 func (m *RoomUserMutation) UserCleared() bool {
 	return m.cleareduser
-}
-
-// UserID returns the "user" edge ID in the mutation.
-func (m *RoomUserMutation) UserID() (id int, exists bool) {
-	if m.user != nil {
-		return *m.user, true
-	}
-	return
 }
 
 // UserIDs returns the "user" edge IDs in the mutation.
@@ -2097,12 +2288,18 @@ func (m *RoomUserMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *RoomUserMutation) Fields() []string {
-	fields := make([]string, 0, 2)
+	fields := make([]string, 0, 4)
 	if m.created_at != nil {
 		fields = append(fields, roomuser.FieldCreatedAt)
 	}
 	if m.updated_at != nil {
 		fields = append(fields, roomuser.FieldUpdatedAt)
+	}
+	if m.room != nil {
+		fields = append(fields, roomuser.FieldRoomID)
+	}
+	if m.user != nil {
+		fields = append(fields, roomuser.FieldUserID)
 	}
 	return fields
 }
@@ -2116,6 +2313,10 @@ func (m *RoomUserMutation) Field(name string) (ent.Value, bool) {
 		return m.CreatedAt()
 	case roomuser.FieldUpdatedAt:
 		return m.UpdatedAt()
+	case roomuser.FieldRoomID:
+		return m.RoomID()
+	case roomuser.FieldUserID:
+		return m.UserID()
 	}
 	return nil, false
 }
@@ -2129,6 +2330,10 @@ func (m *RoomUserMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldCreatedAt(ctx)
 	case roomuser.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
+	case roomuser.FieldRoomID:
+		return m.OldRoomID(ctx)
+	case roomuser.FieldUserID:
+		return m.OldUserID(ctx)
 	}
 	return nil, fmt.Errorf("unknown RoomUser field %s", name)
 }
@@ -2152,6 +2357,20 @@ func (m *RoomUserMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetUpdatedAt(v)
 		return nil
+	case roomuser.FieldRoomID:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRoomID(v)
+		return nil
+	case roomuser.FieldUserID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUserID(v)
+		return nil
 	}
 	return fmt.Errorf("unknown RoomUser field %s", name)
 }
@@ -2159,13 +2378,16 @@ func (m *RoomUserMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
 func (m *RoomUserMutation) AddedFields() []string {
-	return nil
+	var fields []string
+	return fields
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
 func (m *RoomUserMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	}
 	return nil, false
 }
 
@@ -2206,6 +2428,12 @@ func (m *RoomUserMutation) ResetField(name string) error {
 		return nil
 	case roomuser.FieldUpdatedAt:
 		m.ResetUpdatedAt()
+		return nil
+	case roomuser.FieldRoomID:
+		m.ResetRoomID()
+		return nil
+	case roomuser.FieldUserID:
+		m.ResetUserID()
 		return nil
 	}
 	return fmt.Errorf("unknown RoomUser field %s", name)

@@ -30,7 +30,6 @@ type MessageQuery struct {
 	withRoom   *RoomQuery
 	withUser   *UserQuery
 	withPost   *PostQuery
-	withFKs    bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -424,7 +423,6 @@ func (mq *MessageQuery) prepareQuery(ctx context.Context) error {
 func (mq *MessageQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Message, error) {
 	var (
 		nodes       = []*Message{}
-		withFKs     = mq.withFKs
 		_spec       = mq.querySpec()
 		loadedTypes = [3]bool{
 			mq.withRoom != nil,
@@ -432,12 +430,6 @@ func (mq *MessageQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Mess
 			mq.withPost != nil,
 		}
 	)
-	if mq.withRoom != nil || mq.withUser != nil || mq.withPost != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, message.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*Message).scanValues(nil, columns)
 	}
@@ -481,10 +473,7 @@ func (mq *MessageQuery) loadRoom(ctx context.Context, query *RoomQuery, nodes []
 	ids := make([]uuid.UUID, 0, len(nodes))
 	nodeids := make(map[uuid.UUID][]*Message)
 	for i := range nodes {
-		if nodes[i].room_messages == nil {
-			continue
-		}
-		fk := *nodes[i].room_messages
+		fk := nodes[i].RoomID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -498,7 +487,7 @@ func (mq *MessageQuery) loadRoom(ctx context.Context, query *RoomQuery, nodes []
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "room_messages" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "room_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -510,10 +499,7 @@ func (mq *MessageQuery) loadUser(ctx context.Context, query *UserQuery, nodes []
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*Message)
 	for i := range nodes {
-		if nodes[i].user_messages == nil {
-			continue
-		}
-		fk := *nodes[i].user_messages
+		fk := nodes[i].UserID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -527,7 +513,7 @@ func (mq *MessageQuery) loadUser(ctx context.Context, query *UserQuery, nodes []
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "user_messages" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "user_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -539,10 +525,7 @@ func (mq *MessageQuery) loadPost(ctx context.Context, query *PostQuery, nodes []
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*Message)
 	for i := range nodes {
-		if nodes[i].post_messages == nil {
-			continue
-		}
-		fk := *nodes[i].post_messages
+		fk := nodes[i].PostID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -556,7 +539,7 @@ func (mq *MessageQuery) loadPost(ctx context.Context, query *PostQuery, nodes []
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "post_messages" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "post_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)

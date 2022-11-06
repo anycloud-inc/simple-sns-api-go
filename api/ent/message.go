@@ -26,12 +26,15 @@ type Message struct {
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
+	// RoomID holds the value of the "room_id" field.
+	RoomID uuid.UUID `json:"room_id,omitempty"`
+	// UserID holds the value of the "user_id" field.
+	UserID int `json:"user_id,omitempty"`
+	// PostID holds the value of the "post_id" field.
+	PostID int `json:"post_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the MessageQuery when eager-loading is set.
-	Edges         MessageEdges `json:"edges"`
-	post_messages *int
-	room_messages *uuid.UUID
-	user_messages *int
+	Edges MessageEdges `json:"edges"`
 }
 
 // MessageEdges holds the relations/edges for other nodes in the graph.
@@ -91,18 +94,14 @@ func (*Message) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case message.FieldID:
+		case message.FieldID, message.FieldUserID, message.FieldPostID:
 			values[i] = new(sql.NullInt64)
 		case message.FieldContent:
 			values[i] = new(sql.NullString)
 		case message.FieldCreatedAt, message.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
-		case message.ForeignKeys[0]: // post_messages
-			values[i] = new(sql.NullInt64)
-		case message.ForeignKeys[1]: // room_messages
-			values[i] = &sql.NullScanner{S: new(uuid.UUID)}
-		case message.ForeignKeys[2]: // user_messages
-			values[i] = new(sql.NullInt64)
+		case message.FieldRoomID:
+			values[i] = new(uuid.UUID)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Message", columns[i])
 		}
@@ -142,26 +141,23 @@ func (m *Message) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				m.UpdatedAt = value.Time
 			}
-		case message.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field post_messages", value)
-			} else if value.Valid {
-				m.post_messages = new(int)
-				*m.post_messages = int(value.Int64)
+		case message.FieldRoomID:
+			if value, ok := values[i].(*uuid.UUID); !ok {
+				return fmt.Errorf("unexpected type %T for field room_id", values[i])
+			} else if value != nil {
+				m.RoomID = *value
 			}
-		case message.ForeignKeys[1]:
-			if value, ok := values[i].(*sql.NullScanner); !ok {
-				return fmt.Errorf("unexpected type %T for field room_messages", values[i])
-			} else if value.Valid {
-				m.room_messages = new(uuid.UUID)
-				*m.room_messages = *value.S.(*uuid.UUID)
-			}
-		case message.ForeignKeys[2]:
+		case message.FieldUserID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field user_messages", value)
+				return fmt.Errorf("unexpected type %T for field user_id", values[i])
 			} else if value.Valid {
-				m.user_messages = new(int)
-				*m.user_messages = int(value.Int64)
+				m.UserID = int(value.Int64)
+			}
+		case message.FieldPostID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field post_id", values[i])
+			} else if value.Valid {
+				m.PostID = int(value.Int64)
 			}
 		}
 	}
@@ -214,6 +210,15 @@ func (m *Message) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
 	builder.WriteString(m.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("room_id=")
+	builder.WriteString(fmt.Sprintf("%v", m.RoomID))
+	builder.WriteString(", ")
+	builder.WriteString("user_id=")
+	builder.WriteString(fmt.Sprintf("%v", m.UserID))
+	builder.WriteString(", ")
+	builder.WriteString("post_id=")
+	builder.WriteString(fmt.Sprintf("%v", m.PostID))
 	builder.WriteByte(')')
 	return builder.String()
 }

@@ -2,12 +2,9 @@ package message
 
 import (
 	"context"
-	"fmt"
-	"log"
 	"simple_sns_api/ent"
 	"simple_sns_api/ent/message"
 	"simple_sns_api/src/db"
-	"strings"
 
 	"github.com/google/uuid"
 )
@@ -15,31 +12,23 @@ import (
 type MessageService struct{}
 
 func (s MessageService) FindLatestMessages(ctx context.Context, roomIds []uuid.UUID) ([]*ent.Message, error) {
-	roomIdStrings := make([]string, len(roomIds))
-	for i, e := range roomIds {
-		roomIdStrings[i] = "\"" + e.String() + "\""
+	var result []struct {
+		RoomID uuid.UUID `json:"room_id"`
+		Max    int
 	}
-	sql := `
-		SELECT MAX(id)
-		FROM messages
-		WHERE room_messages IN (%s)
-		GROUP BY room_messages
-	`
-	rows, err := db.Client.QueryContext(ctx, fmt.Sprintf(sql, strings.Join(roomIdStrings, ",")))
-	defer rows.Close()
+	err := db.Client.Message.Query().
+		Where(message.RoomIDIn(roomIds...)).
+		GroupBy(message.FieldRoomID).
+		Aggregate(ent.Max(message.FieldID)).
+		Scan(ctx, &result)
 
 	if err != nil {
 		return nil, err
 	}
 
-	latestMessageIds := make([]int, len(roomIds))
-	for rows.Next() {
-		var id int
-		err := rows.Scan(&id)
-		if err != nil {
-			log.Fatal(err)
-		}
-		latestMessageIds = append(latestMessageIds, id)
+	latestMessageIds := make([]int, len(result))
+	for i, e := range result {
+		latestMessageIds[i] = e.Max
 	}
 
 	if err != nil {

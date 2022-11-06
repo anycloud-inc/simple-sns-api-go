@@ -51,21 +51,21 @@ func (ruu *RoomUserUpdate) SetUpdatedAt(t time.Time) *RoomUserUpdate {
 	return ruu
 }
 
-// SetRoomID sets the "room" edge to the Room entity by ID.
-func (ruu *RoomUserUpdate) SetRoomID(id uuid.UUID) *RoomUserUpdate {
-	ruu.mutation.SetRoomID(id)
+// SetRoomID sets the "room_id" field.
+func (ruu *RoomUserUpdate) SetRoomID(u uuid.UUID) *RoomUserUpdate {
+	ruu.mutation.SetRoomID(u)
+	return ruu
+}
+
+// SetUserID sets the "user_id" field.
+func (ruu *RoomUserUpdate) SetUserID(i int) *RoomUserUpdate {
+	ruu.mutation.SetUserID(i)
 	return ruu
 }
 
 // SetRoom sets the "room" edge to the Room entity.
 func (ruu *RoomUserUpdate) SetRoom(r *Room) *RoomUserUpdate {
 	return ruu.SetRoomID(r.ID)
-}
-
-// SetUserID sets the "user" edge to the User entity by ID.
-func (ruu *RoomUserUpdate) SetUserID(id int) *RoomUserUpdate {
-	ruu.mutation.SetUserID(id)
-	return ruu
 }
 
 // SetUser sets the "user" edge to the User entity.
@@ -311,21 +311,21 @@ func (ruuo *RoomUserUpdateOne) SetUpdatedAt(t time.Time) *RoomUserUpdateOne {
 	return ruuo
 }
 
-// SetRoomID sets the "room" edge to the Room entity by ID.
-func (ruuo *RoomUserUpdateOne) SetRoomID(id uuid.UUID) *RoomUserUpdateOne {
-	ruuo.mutation.SetRoomID(id)
+// SetRoomID sets the "room_id" field.
+func (ruuo *RoomUserUpdateOne) SetRoomID(u uuid.UUID) *RoomUserUpdateOne {
+	ruuo.mutation.SetRoomID(u)
+	return ruuo
+}
+
+// SetUserID sets the "user_id" field.
+func (ruuo *RoomUserUpdateOne) SetUserID(i int) *RoomUserUpdateOne {
+	ruuo.mutation.SetUserID(i)
 	return ruuo
 }
 
 // SetRoom sets the "room" edge to the Room entity.
 func (ruuo *RoomUserUpdateOne) SetRoom(r *Room) *RoomUserUpdateOne {
 	return ruuo.SetRoomID(r.ID)
-}
-
-// SetUserID sets the "user" edge to the User entity by ID.
-func (ruuo *RoomUserUpdateOne) SetUserID(id int) *RoomUserUpdateOne {
-	ruuo.mutation.SetUserID(id)
-	return ruuo
 }
 
 // SetUser sets the "user" edge to the User entity.

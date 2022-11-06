@@ -474,7 +474,6 @@ func (pq *PostQuery) loadMessages(ctx context.Context, query *MessageQuery, node
 			init(nodes[i])
 		}
 	}
-	query.withFKs = true
 	query.Where(predicate.Message(func(s *sql.Selector) {
 		s.Where(sql.InValues(post.MessagesColumn, fks...))
 	}))
@@ -483,13 +482,10 @@ func (pq *PostQuery) loadMessages(ctx context.Context, query *MessageQuery, node
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.post_messages
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "post_messages" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.PostID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "post_messages" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "post_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
