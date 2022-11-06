@@ -28,7 +28,6 @@ type RoomUserQuery struct {
 	predicates []predicate.RoomUser
 	withRoom   *RoomQuery
 	withUser   *UserQuery
-	withFKs    bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -388,19 +387,12 @@ func (ruq *RoomUserQuery) prepareQuery(ctx context.Context) error {
 func (ruq *RoomUserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*RoomUser, error) {
 	var (
 		nodes       = []*RoomUser{}
-		withFKs     = ruq.withFKs
 		_spec       = ruq.querySpec()
 		loadedTypes = [2]bool{
 			ruq.withRoom != nil,
 			ruq.withUser != nil,
 		}
 	)
-	if ruq.withRoom != nil || ruq.withUser != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, roomuser.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*RoomUser).scanValues(nil, columns)
 	}
@@ -438,10 +430,7 @@ func (ruq *RoomUserQuery) loadRoom(ctx context.Context, query *RoomQuery, nodes 
 	ids := make([]uuid.UUID, 0, len(nodes))
 	nodeids := make(map[uuid.UUID][]*RoomUser)
 	for i := range nodes {
-		if nodes[i].room_room_users == nil {
-			continue
-		}
-		fk := *nodes[i].room_room_users
+		fk := nodes[i].RoomID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -455,7 +444,7 @@ func (ruq *RoomUserQuery) loadRoom(ctx context.Context, query *RoomQuery, nodes 
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "room_room_users" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "room_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -467,10 +456,7 @@ func (ruq *RoomUserQuery) loadUser(ctx context.Context, query *UserQuery, nodes 
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*RoomUser)
 	for i := range nodes {
-		if nodes[i].user_room_users == nil {
-			continue
-		}
-		fk := *nodes[i].user_room_users
+		fk := nodes[i].UserID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -484,7 +470,7 @@ func (ruq *RoomUserQuery) loadUser(ctx context.Context, query *UserQuery, nodes 
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "user_room_users" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "user_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)

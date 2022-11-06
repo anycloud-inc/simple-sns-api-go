@@ -513,7 +513,6 @@ func (uq *UserQuery) loadRoomUsers(ctx context.Context, query *RoomUserQuery, no
 			init(nodes[i])
 		}
 	}
-	query.withFKs = true
 	query.Where(predicate.RoomUser(func(s *sql.Selector) {
 		s.Where(sql.InValues(user.RoomUsersColumn, fks...))
 	}))
@@ -522,13 +521,10 @@ func (uq *UserQuery) loadRoomUsers(ctx context.Context, query *RoomUserQuery, no
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.user_room_users
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "user_room_users" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.UserID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "user_room_users" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "user_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -544,7 +540,6 @@ func (uq *UserQuery) loadMessages(ctx context.Context, query *MessageQuery, node
 			init(nodes[i])
 		}
 	}
-	query.withFKs = true
 	query.Where(predicate.Message(func(s *sql.Selector) {
 		s.Where(sql.InValues(user.MessagesColumn, fks...))
 	}))
@@ -553,13 +548,10 @@ func (uq *UserQuery) loadMessages(ctx context.Context, query *MessageQuery, node
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.user_messages
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "user_messages" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.UserID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "user_messages" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "user_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}

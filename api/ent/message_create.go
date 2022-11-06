@@ -66,9 +66,29 @@ func (mc *MessageCreate) SetNillableUpdatedAt(t *time.Time) *MessageCreate {
 	return mc
 }
 
-// SetRoomID sets the "room" edge to the Room entity by ID.
-func (mc *MessageCreate) SetRoomID(id uuid.UUID) *MessageCreate {
-	mc.mutation.SetRoomID(id)
+// SetRoomID sets the "room_id" field.
+func (mc *MessageCreate) SetRoomID(u uuid.UUID) *MessageCreate {
+	mc.mutation.SetRoomID(u)
+	return mc
+}
+
+// SetUserID sets the "user_id" field.
+func (mc *MessageCreate) SetUserID(i int) *MessageCreate {
+	mc.mutation.SetUserID(i)
+	return mc
+}
+
+// SetPostID sets the "post_id" field.
+func (mc *MessageCreate) SetPostID(i int) *MessageCreate {
+	mc.mutation.SetPostID(i)
+	return mc
+}
+
+// SetNillablePostID sets the "post_id" field if the given value is not nil.
+func (mc *MessageCreate) SetNillablePostID(i *int) *MessageCreate {
+	if i != nil {
+		mc.SetPostID(*i)
+	}
 	return mc
 }
 
@@ -77,29 +97,9 @@ func (mc *MessageCreate) SetRoom(r *Room) *MessageCreate {
 	return mc.SetRoomID(r.ID)
 }
 
-// SetUserID sets the "user" edge to the User entity by ID.
-func (mc *MessageCreate) SetUserID(id int) *MessageCreate {
-	mc.mutation.SetUserID(id)
-	return mc
-}
-
 // SetUser sets the "user" edge to the User entity.
 func (mc *MessageCreate) SetUser(u *User) *MessageCreate {
 	return mc.SetUserID(u.ID)
-}
-
-// SetPostID sets the "post" edge to the Post entity by ID.
-func (mc *MessageCreate) SetPostID(id int) *MessageCreate {
-	mc.mutation.SetPostID(id)
-	return mc
-}
-
-// SetNillablePostID sets the "post" edge to the Post entity by ID if the given value is not nil.
-func (mc *MessageCreate) SetNillablePostID(id *int) *MessageCreate {
-	if id != nil {
-		mc = mc.SetPostID(*id)
-	}
-	return mc
 }
 
 // SetPost sets the "post" edge to the Post entity.
@@ -215,6 +215,12 @@ func (mc *MessageCreate) check() error {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "Message.updated_at"`)}
 	}
 	if _, ok := mc.mutation.RoomID(); !ok {
+		return &ValidationError{Name: "room_id", err: errors.New(`ent: missing required field "Message.room_id"`)}
+	}
+	if _, ok := mc.mutation.UserID(); !ok {
+		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "Message.user_id"`)}
+	}
+	if _, ok := mc.mutation.RoomID(); !ok {
 		return &ValidationError{Name: "room", err: errors.New(`ent: missing required edge "Message.room"`)}
 	}
 	if _, ok := mc.mutation.UserID(); !ok {
@@ -288,7 +294,7 @@ func (mc *MessageCreate) createSpec() (*Message, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.room_messages = &nodes[0]
+		_node.RoomID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := mc.mutation.UserIDs(); len(nodes) > 0 {
@@ -308,7 +314,7 @@ func (mc *MessageCreate) createSpec() (*Message, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.user_messages = &nodes[0]
+		_node.UserID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := mc.mutation.PostIDs(); len(nodes) > 0 {
@@ -328,7 +334,7 @@ func (mc *MessageCreate) createSpec() (*Message, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.post_messages = &nodes[0]
+		_node.PostID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

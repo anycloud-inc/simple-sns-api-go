@@ -36,7 +36,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "message" package.
 	MessagesInverseTable = "messages"
 	// MessagesColumn is the table column denoting the messages relation/edge.
-	MessagesColumn = "post_messages"
+	MessagesColumn = "post_id"
 )
 
 // Columns holds all SQL columns for post fields.

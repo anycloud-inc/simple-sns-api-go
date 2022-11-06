@@ -44,14 +44,14 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "roomuser" package.
 	RoomUsersInverseTable = "room_users"
 	// RoomUsersColumn is the table column denoting the roomUsers relation/edge.
-	RoomUsersColumn = "user_room_users"
+	RoomUsersColumn = "user_id"
 	// MessagesTable is the table that holds the messages relation/edge.
 	MessagesTable = "messages"
 	// MessagesInverseTable is the table name for the Message entity.
 	// It exists in this package in order to avoid circular dependency with the "message" package.
 	MessagesInverseTable = "messages"
 	// MessagesColumn is the table column denoting the messages relation/edge.
-	MessagesColumn = "user_messages"
+	MessagesColumn = "user_id"
 )
 
 // Columns holds all SQL columns for user fields.

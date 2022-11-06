@@ -51,21 +51,21 @@ func (ruc *RoomUserCreate) SetNillableUpdatedAt(t *time.Time) *RoomUserCreate {
 	return ruc
 }
 
-// SetRoomID sets the "room" edge to the Room entity by ID.
-func (ruc *RoomUserCreate) SetRoomID(id uuid.UUID) *RoomUserCreate {
-	ruc.mutation.SetRoomID(id)
+// SetRoomID sets the "room_id" field.
+func (ruc *RoomUserCreate) SetRoomID(u uuid.UUID) *RoomUserCreate {
+	ruc.mutation.SetRoomID(u)
+	return ruc
+}
+
+// SetUserID sets the "user_id" field.
+func (ruc *RoomUserCreate) SetUserID(i int) *RoomUserCreate {
+	ruc.mutation.SetUserID(i)
 	return ruc
 }
 
 // SetRoom sets the "room" edge to the Room entity.
 func (ruc *RoomUserCreate) SetRoom(r *Room) *RoomUserCreate {
 	return ruc.SetRoomID(r.ID)
-}
-
-// SetUserID sets the "user" edge to the User entity by ID.
-func (ruc *RoomUserCreate) SetUserID(id int) *RoomUserCreate {
-	ruc.mutation.SetUserID(id)
-	return ruc
 }
 
 // SetUser sets the "user" edge to the User entity.
@@ -169,6 +169,12 @@ func (ruc *RoomUserCreate) check() error {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "RoomUser.updated_at"`)}
 	}
 	if _, ok := ruc.mutation.RoomID(); !ok {
+		return &ValidationError{Name: "room_id", err: errors.New(`ent: missing required field "RoomUser.room_id"`)}
+	}
+	if _, ok := ruc.mutation.UserID(); !ok {
+		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "RoomUser.user_id"`)}
+	}
+	if _, ok := ruc.mutation.RoomID(); !ok {
 		return &ValidationError{Name: "room", err: errors.New(`ent: missing required edge "RoomUser.room"`)}
 	}
 	if _, ok := ruc.mutation.UserID(); !ok {
@@ -234,7 +240,7 @@ func (ruc *RoomUserCreate) createSpec() (*RoomUser, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.room_room_users = &nodes[0]
+		_node.RoomID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := ruc.mutation.UserIDs(); len(nodes) > 0 {
@@ -254,7 +260,7 @@ func (ruc *RoomUserCreate) createSpec() (*RoomUser, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.user_room_users = &nodes[0]
+		_node.UserID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

@@ -14,9 +14,9 @@ var (
 		{Name: "content", Type: field.TypeString, Default: ""},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "post_messages", Type: field.TypeInt, Nullable: true},
-		{Name: "room_messages", Type: field.TypeUUID},
-		{Name: "user_messages", Type: field.TypeInt},
+		{Name: "post_id", Type: field.TypeInt, Nullable: true},
+		{Name: "room_id", Type: field.TypeUUID},
+		{Name: "user_id", Type: field.TypeInt},
 	}
 	// MessagesTable holds the schema information for the "messages" table.
 	MessagesTable = &schema.Table{
@@ -84,8 +84,8 @@ var (
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "room_room_users", Type: field.TypeUUID},
-		{Name: "user_room_users", Type: field.TypeInt},
+		{Name: "room_id", Type: field.TypeUUID},
+		{Name: "user_id", Type: field.TypeInt},
 	}
 	// RoomUsersTable holds the schema information for the "room_users" table.
 	RoomUsersTable = &schema.Table{

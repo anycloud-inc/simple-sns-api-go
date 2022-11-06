@@ -8,6 +8,7 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"github.com/google/uuid"
 )
 
 // ID filters vertices based on their ID field.
@@ -92,6 +93,20 @@ func CreatedAt(v time.Time) predicate.RoomUser {
 func UpdatedAt(v time.Time) predicate.RoomUser {
 	return predicate.RoomUser(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldUpdatedAt), v))
+	})
+}
+
+// RoomID applies equality check predicate on the "room_id" field. It's identical to RoomIDEQ.
+func RoomID(v uuid.UUID) predicate.RoomUser {
+	return predicate.RoomUser(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldRoomID), v))
+	})
+}
+
+// UserID applies equality check predicate on the "user_id" field. It's identical to UserIDEQ.
+func UserID(v int) predicate.RoomUser {
+	return predicate.RoomUser(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldUserID), v))
 	})
 }
 
@@ -220,6 +235,78 @@ func UpdatedAtLT(v time.Time) predicate.RoomUser {
 func UpdatedAtLTE(v time.Time) predicate.RoomUser {
 	return predicate.RoomUser(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldUpdatedAt), v))
+	})
+}
+
+// RoomIDEQ applies the EQ predicate on the "room_id" field.
+func RoomIDEQ(v uuid.UUID) predicate.RoomUser {
+	return predicate.RoomUser(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldRoomID), v))
+	})
+}
+
+// RoomIDNEQ applies the NEQ predicate on the "room_id" field.
+func RoomIDNEQ(v uuid.UUID) predicate.RoomUser {
+	return predicate.RoomUser(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldRoomID), v))
+	})
+}
+
+// RoomIDIn applies the In predicate on the "room_id" field.
+func RoomIDIn(vs ...uuid.UUID) predicate.RoomUser {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.RoomUser(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldRoomID), v...))
+	})
+}
+
+// RoomIDNotIn applies the NotIn predicate on the "room_id" field.
+func RoomIDNotIn(vs ...uuid.UUID) predicate.RoomUser {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.RoomUser(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldRoomID), v...))
+	})
+}
+
+// UserIDEQ applies the EQ predicate on the "user_id" field.
+func UserIDEQ(v int) predicate.RoomUser {
+	return predicate.RoomUser(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldUserID), v))
+	})
+}
+
+// UserIDNEQ applies the NEQ predicate on the "user_id" field.
+func UserIDNEQ(v int) predicate.RoomUser {
+	return predicate.RoomUser(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldUserID), v))
+	})
+}
+
+// UserIDIn applies the In predicate on the "user_id" field.
+func UserIDIn(vs ...int) predicate.RoomUser {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.RoomUser(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldUserID), v...))
+	})
+}
+
+// UserIDNotIn applies the NotIn predicate on the "user_id" field.
+func UserIDNotIn(vs ...int) predicate.RoomUser {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.RoomUser(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldUserID), v...))
 	})
 }
 
