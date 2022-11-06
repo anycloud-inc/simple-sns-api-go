@@ -23,10 +23,11 @@ type Post struct {
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
+	// UserID holds the value of the "user_id" field.
+	UserID int `json:"user_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the PostQuery when eager-loading is set.
-	Edges      PostEdges `json:"edges"`
-	user_posts *int
+	Edges PostEdges `json:"edges"`
 }
 
 // PostEdges holds the relations/edges for other nodes in the graph.
@@ -67,14 +68,12 @@ func (*Post) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case post.FieldID:
+		case post.FieldID, post.FieldUserID:
 			values[i] = new(sql.NullInt64)
 		case post.FieldBody:
 			values[i] = new(sql.NullString)
 		case post.FieldCreatedAt, post.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
-		case post.ForeignKeys[0]: // user_posts
-			values[i] = new(sql.NullInt64)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Post", columns[i])
 		}
@@ -114,12 +113,11 @@ func (po *Post) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				po.UpdatedAt = value.Time
 			}
-		case post.ForeignKeys[0]:
+		case post.FieldUserID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field user_posts", value)
+				return fmt.Errorf("unexpected type %T for field user_id", values[i])
 			} else if value.Valid {
-				po.user_posts = new(int)
-				*po.user_posts = int(value.Int64)
+				po.UserID = int(value.Int64)
 			}
 		}
 	}
@@ -167,6 +165,9 @@ func (po *Post) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
 	builder.WriteString(po.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("user_id=")
+	builder.WriteString(fmt.Sprintf("%v", po.UserID))
 	builder.WriteByte(')')
 	return builder.String()
 }

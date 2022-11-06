@@ -64,9 +64,9 @@ func (pu *PostUpdate) SetUpdatedAt(t time.Time) *PostUpdate {
 	return pu
 }
 
-// SetUserID sets the "user" edge to the User entity by ID.
-func (pu *PostUpdate) SetUserID(id int) *PostUpdate {
-	pu.mutation.SetUserID(id)
+// SetUserID sets the "user_id" field.
+func (pu *PostUpdate) SetUserID(i int) *PostUpdate {
+	pu.mutation.SetUserID(i)
 	return pu
 }
 
@@ -385,9 +385,9 @@ func (puo *PostUpdateOne) SetUpdatedAt(t time.Time) *PostUpdateOne {
 	return puo
 }
 
-// SetUserID sets the "user" edge to the User entity by ID.
-func (puo *PostUpdateOne) SetUserID(id int) *PostUpdateOne {
-	puo.mutation.SetUserID(id)
+// SetUserID sets the "user_id" field.
+func (puo *PostUpdateOne) SetUserID(i int) *PostUpdateOne {
+	puo.mutation.SetUserID(i)
 	return puo
 }
 

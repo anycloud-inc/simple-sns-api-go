@@ -4,10 +4,11 @@ import (
 	"context"
 	"fmt"
 	"simple_sns_api/ent"
+	"simple_sns_api/ent/message"
 	"simple_sns_api/ent/room"
 	entRoomUser "simple_sns_api/ent/roomuser"
 	"simple_sns_api/src/db"
-	"simple_sns_api/src/modules/message"
+
 	"sort"
 	"strings"
 
@@ -28,7 +29,7 @@ func (s RoomService) Find(ctx context.Context, userId int) ([]*ent.Room, error) 
 		return nil, err
 	}
 
-	latestMessages, err := message.MessageService{}.FindLatestMessages(ctx, roomIds)
+	latestMessages, err := findLatestMessages(ctx, roomIds)
 
 	if err != nil {
 		return nil, err
@@ -96,4 +97,34 @@ func makeUsersId(userIds []int) string {
 		userIdStrings[i] = fmt.Sprint(userId)
 	}
 	return strings.Join(userIdStrings, "-")
+}
+
+func findLatestMessages(ctx context.Context, roomIds []uuid.UUID) ([]*ent.Message, error) {
+	var result []struct {
+		RoomID uuid.UUID `json:"room_id"`
+		Max    int
+	}
+	err := db.Client.Message.Query().
+		Where(message.RoomIDIn(roomIds...)).
+		GroupBy(message.FieldRoomID).
+		Aggregate(ent.Max(message.FieldID)).
+		Scan(ctx, &result)
+
+	if err != nil {
+		return nil, err
+	}
+
+	latestMessageIds := make([]int, len(result))
+	for i, e := range result {
+		latestMessageIds[i] = e.Max
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	return db.Client.Message.Query().
+		Where(message.IDIn(latestMessageIds...)).
+		Order(ent.Desc(message.FieldCreatedAt)).
+		All(ctx)
 }

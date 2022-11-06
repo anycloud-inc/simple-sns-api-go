@@ -37,7 +37,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "post" package.
 	PostsInverseTable = "posts"
 	// PostsColumn is the table column denoting the posts relation/edge.
-	PostsColumn = "user_posts"
+	PostsColumn = "user_id"
 	// RoomUsersTable is the table that holds the roomUsers relation/edge.
 	RoomUsersTable = "room_users"
 	// RoomUsersInverseTable is the table name for the RoomUser entity.
