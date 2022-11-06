@@ -327,12 +327,12 @@ func (rq *RoomQuery) WithMessages(opts ...func(*MessageQuery)) *RoomQuery {
 // Example:
 //
 //	var v []struct {
-//		UserIds string `json:"userIds,omitempty"`
+//		UsersId string `json:"usersId,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Room.Query().
-//		GroupBy(room.FieldUserIds).
+//		GroupBy(room.FieldUsersId).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (rq *RoomQuery) GroupBy(field string, fields ...string) *RoomGroupBy {
@@ -355,11 +355,11 @@ func (rq *RoomQuery) GroupBy(field string, fields ...string) *RoomGroupBy {
 // Example:
 //
 //	var v []struct {
-//		UserIds string `json:"userIds,omitempty"`
+//		UsersId string `json:"usersId,omitempty"`
 //	}
 //
 //	client.Room.Query().
-//		Select(room.FieldUserIds).
+//		Select(room.FieldUsersId).
 //		Scan(ctx, &v)
 func (rq *RoomQuery) Select(fields ...string) *RoomSelect {
 	rq.fields = append(rq.fields, fields...)

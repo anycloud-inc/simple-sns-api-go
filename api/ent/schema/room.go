@@ -19,7 +19,7 @@ func (Room) Fields() []ent.Field {
 	return []ent.Field{
 		field.UUID("id", uuid.UUID{}).
 			Default(func() uuid.UUID { return uuid.Must(uuid.NewRandom()) }),
-		field.String("userIds").NotEmpty(),
+		field.String("usersId").NotEmpty().Unique(),
 		field.Time("created_at").Default(time.Now),
 		field.Time("updated_at").Default(time.Now).UpdateDefault(time.Now),
 	}

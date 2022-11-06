@@ -18,7 +18,7 @@ func TestFind(t *testing.T) {
 	// prepare data
 	user1, user2 := createAccountsX(ctx)
 	user3, user4 := createAccountsX(ctx)
-	room1 := db.Client.Room.Create().SetUserIds(fmt.Sprintf("%d-%d", user1.ID, user2.ID)).SaveX(ctx)
+	room1 := db.Client.Room.Create().SetUsersId(fmt.Sprintf("%d-%d", user1.ID, user2.ID)).SaveX(ctx)
 	db.Client.RoomUser.Create().SetRoom(room1).SetUser(user1).SaveX(ctx)
 	db.Client.RoomUser.Create().SetRoom(room1).SetUser(user2).SaveX(ctx)
 	db.Client.Message.Create().SetRoom(room1).SetUser(user1).
@@ -26,20 +26,20 @@ func TestFind(t *testing.T) {
 	db.Client.Message.Create().SetRoom(room1).SetUser(user1).
 		SetContent("HOGE2").SetCreatedAt(time.Now().Add(time.Minute)).SaveX(ctx)
 
-	room2 := db.Client.Room.Create().SetUserIds(fmt.Sprintf("%d-%d", user1.ID, user3.ID)).SaveX(ctx)
+	room2 := db.Client.Room.Create().SetUsersId(fmt.Sprintf("%d-%d", user1.ID, user3.ID)).SaveX(ctx)
 	db.Client.RoomUser.Create().SetRoom(room2).SetUser(user1).SaveX(ctx)
 	db.Client.RoomUser.Create().SetRoom(room2).SetUser(user3).SaveX(ctx)
 	db.Client.Message.Create().SetRoom(room2).SetUser(user1).
 		SetContent("FUGA").SetCreatedAt(time.Now().Add(time.Hour)).SaveX(ctx)
 
-	room3 := db.Client.Room.Create().SetUserIds(fmt.Sprintf("%d-%d", user1.ID, user4.ID)).SaveX(ctx)
+	room3 := db.Client.Room.Create().SetUsersId(fmt.Sprintf("%d-%d", user1.ID, user4.ID)).SaveX(ctx)
 	db.Client.RoomUser.Create().SetRoom(room3).SetUser(user1).SaveX(ctx)
 	db.Client.RoomUser.Create().SetRoom(room3).SetUser(user4).SaveX(ctx)
 	db.Client.Message.Create().SetRoom(room3).SetUser(user1).
 		SetContent("PIYO").SetCreatedAt(time.Now().Add(-time.Hour)).SaveX(ctx)
 
 	// test
-	rooms, err := RoomService{}.find(ctx, user1.ID)
+	rooms, err := RoomService{}.Find(ctx, user1.ID)
 	if err != nil {
 		t.Error(err)
 	}

@@ -17,8 +17,8 @@ type Room struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID uuid.UUID `json:"id,omitempty"`
-	// UserIds holds the value of the "userIds" field.
-	UserIds string `json:"userIds,omitempty"`
+	// UsersId holds the value of the "usersId" field.
+	UsersId string `json:"usersId,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
@@ -62,7 +62,7 @@ func (*Room) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case room.FieldUserIds:
+		case room.FieldUsersId:
 			values[i] = new(sql.NullString)
 		case room.FieldCreatedAt, room.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -89,11 +89,11 @@ func (r *Room) assignValues(columns []string, values []any) error {
 			} else if value != nil {
 				r.ID = *value
 			}
-		case room.FieldUserIds:
+		case room.FieldUsersId:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field userIds", values[i])
+				return fmt.Errorf("unexpected type %T for field usersId", values[i])
 			} else if value.Valid {
-				r.UserIds = value.String
+				r.UsersId = value.String
 			}
 		case room.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -145,8 +145,8 @@ func (r *Room) String() string {
 	var builder strings.Builder
 	builder.WriteString("Room(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", r.ID))
-	builder.WriteString("userIds=")
-	builder.WriteString(r.UserIds)
+	builder.WriteString("usersId=")
+	builder.WriteString(r.UsersId)
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
 	builder.WriteString(r.CreatedAt.Format(time.ANSIC))

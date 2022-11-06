@@ -69,7 +69,7 @@ var (
 	// RoomsColumns holds the columns for the "rooms" table.
 	RoomsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID},
-		{Name: "user_ids", Type: field.TypeString},
+		{Name: "users_id", Type: field.TypeString, Unique: true},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
 	}
