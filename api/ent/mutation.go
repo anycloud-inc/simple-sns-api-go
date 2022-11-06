@@ -42,7 +42,7 @@ type MessageMutation struct {
 	op            Op
 	typ           string
 	id            *int
-	body          *string
+	content       *string
 	created_at    *time.Time
 	updated_at    *time.Time
 	clearedFields map[string]struct{}
@@ -155,40 +155,40 @@ func (m *MessageMutation) IDs(ctx context.Context) ([]int, error) {
 	}
 }
 
-// SetBody sets the "body" field.
-func (m *MessageMutation) SetBody(s string) {
-	m.body = &s
+// SetContent sets the "content" field.
+func (m *MessageMutation) SetContent(s string) {
+	m.content = &s
 }
 
-// Body returns the value of the "body" field in the mutation.
-func (m *MessageMutation) Body() (r string, exists bool) {
-	v := m.body
+// Content returns the value of the "content" field in the mutation.
+func (m *MessageMutation) Content() (r string, exists bool) {
+	v := m.content
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldBody returns the old "body" field's value of the Message entity.
+// OldContent returns the old "content" field's value of the Message entity.
 // If the Message object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *MessageMutation) OldBody(ctx context.Context) (v string, err error) {
+func (m *MessageMutation) OldContent(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldBody is only allowed on UpdateOne operations")
+		return v, errors.New("OldContent is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldBody requires an ID field in the mutation")
+		return v, errors.New("OldContent requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldBody: %w", err)
+		return v, fmt.Errorf("querying old value for OldContent: %w", err)
 	}
-	return oldValue.Body, nil
+	return oldValue.Content, nil
 }
 
-// ResetBody resets all changes to the "body" field.
-func (m *MessageMutation) ResetBody() {
-	m.body = nil
+// ResetContent resets all changes to the "content" field.
+func (m *MessageMutation) ResetContent() {
+	m.content = nil
 }
 
 // SetCreatedAt sets the "created_at" field.
@@ -400,8 +400,8 @@ func (m *MessageMutation) Type() string {
 // AddedFields().
 func (m *MessageMutation) Fields() []string {
 	fields := make([]string, 0, 3)
-	if m.body != nil {
-		fields = append(fields, message.FieldBody)
+	if m.content != nil {
+		fields = append(fields, message.FieldContent)
 	}
 	if m.created_at != nil {
 		fields = append(fields, message.FieldCreatedAt)
@@ -417,8 +417,8 @@ func (m *MessageMutation) Fields() []string {
 // schema.
 func (m *MessageMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case message.FieldBody:
-		return m.Body()
+	case message.FieldContent:
+		return m.Content()
 	case message.FieldCreatedAt:
 		return m.CreatedAt()
 	case message.FieldUpdatedAt:
@@ -432,8 +432,8 @@ func (m *MessageMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *MessageMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case message.FieldBody:
-		return m.OldBody(ctx)
+	case message.FieldContent:
+		return m.OldContent(ctx)
 	case message.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
 	case message.FieldUpdatedAt:
@@ -447,12 +447,12 @@ func (m *MessageMutation) OldField(ctx context.Context, name string) (ent.Value,
 // type.
 func (m *MessageMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case message.FieldBody:
+	case message.FieldContent:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetBody(v)
+		m.SetContent(v)
 		return nil
 	case message.FieldCreatedAt:
 		v, ok := value.(time.Time)
@@ -517,8 +517,8 @@ func (m *MessageMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *MessageMutation) ResetField(name string) error {
 	switch name {
-	case message.FieldBody:
-		m.ResetBody()
+	case message.FieldContent:
+		m.ResetContent()
 		return nil
 	case message.FieldCreatedAt:
 		m.ResetCreatedAt()

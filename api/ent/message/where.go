@@ -81,10 +81,10 @@ func IDLTE(id int) predicate.Message {
 	})
 }
 
-// Body applies equality check predicate on the "body" field. It's identical to BodyEQ.
-func Body(v string) predicate.Message {
+// Content applies equality check predicate on the "content" field. It's identical to ContentEQ.
+func Content(v string) predicate.Message {
 	return predicate.Message(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldBody), v))
+		s.Where(sql.EQ(s.C(FieldContent), v))
 	})
 }
 
@@ -102,102 +102,102 @@ func UpdatedAt(v time.Time) predicate.Message {
 	})
 }
 
-// BodyEQ applies the EQ predicate on the "body" field.
-func BodyEQ(v string) predicate.Message {
+// ContentEQ applies the EQ predicate on the "content" field.
+func ContentEQ(v string) predicate.Message {
 	return predicate.Message(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldBody), v))
+		s.Where(sql.EQ(s.C(FieldContent), v))
 	})
 }
 
-// BodyNEQ applies the NEQ predicate on the "body" field.
-func BodyNEQ(v string) predicate.Message {
+// ContentNEQ applies the NEQ predicate on the "content" field.
+func ContentNEQ(v string) predicate.Message {
 	return predicate.Message(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldBody), v))
+		s.Where(sql.NEQ(s.C(FieldContent), v))
 	})
 }
 
-// BodyIn applies the In predicate on the "body" field.
-func BodyIn(vs ...string) predicate.Message {
+// ContentIn applies the In predicate on the "content" field.
+func ContentIn(vs ...string) predicate.Message {
 	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.Message(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldBody), v...))
+		s.Where(sql.In(s.C(FieldContent), v...))
 	})
 }
 
-// BodyNotIn applies the NotIn predicate on the "body" field.
-func BodyNotIn(vs ...string) predicate.Message {
+// ContentNotIn applies the NotIn predicate on the "content" field.
+func ContentNotIn(vs ...string) predicate.Message {
 	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.Message(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldBody), v...))
+		s.Where(sql.NotIn(s.C(FieldContent), v...))
 	})
 }
 
-// BodyGT applies the GT predicate on the "body" field.
-func BodyGT(v string) predicate.Message {
+// ContentGT applies the GT predicate on the "content" field.
+func ContentGT(v string) predicate.Message {
 	return predicate.Message(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldBody), v))
+		s.Where(sql.GT(s.C(FieldContent), v))
 	})
 }
 
-// BodyGTE applies the GTE predicate on the "body" field.
-func BodyGTE(v string) predicate.Message {
+// ContentGTE applies the GTE predicate on the "content" field.
+func ContentGTE(v string) predicate.Message {
 	return predicate.Message(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldBody), v))
+		s.Where(sql.GTE(s.C(FieldContent), v))
 	})
 }
 
-// BodyLT applies the LT predicate on the "body" field.
-func BodyLT(v string) predicate.Message {
+// ContentLT applies the LT predicate on the "content" field.
+func ContentLT(v string) predicate.Message {
 	return predicate.Message(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldBody), v))
+		s.Where(sql.LT(s.C(FieldContent), v))
 	})
 }
 
-// BodyLTE applies the LTE predicate on the "body" field.
-func BodyLTE(v string) predicate.Message {
+// ContentLTE applies the LTE predicate on the "content" field.
+func ContentLTE(v string) predicate.Message {
 	return predicate.Message(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldBody), v))
+		s.Where(sql.LTE(s.C(FieldContent), v))
 	})
 }
 
-// BodyContains applies the Contains predicate on the "body" field.
-func BodyContains(v string) predicate.Message {
+// ContentContains applies the Contains predicate on the "content" field.
+func ContentContains(v string) predicate.Message {
 	return predicate.Message(func(s *sql.Selector) {
-		s.Where(sql.Contains(s.C(FieldBody), v))
+		s.Where(sql.Contains(s.C(FieldContent), v))
 	})
 }
 
-// BodyHasPrefix applies the HasPrefix predicate on the "body" field.
-func BodyHasPrefix(v string) predicate.Message {
+// ContentHasPrefix applies the HasPrefix predicate on the "content" field.
+func ContentHasPrefix(v string) predicate.Message {
 	return predicate.Message(func(s *sql.Selector) {
-		s.Where(sql.HasPrefix(s.C(FieldBody), v))
+		s.Where(sql.HasPrefix(s.C(FieldContent), v))
 	})
 }
 
-// BodyHasSuffix applies the HasSuffix predicate on the "body" field.
-func BodyHasSuffix(v string) predicate.Message {
+// ContentHasSuffix applies the HasSuffix predicate on the "content" field.
+func ContentHasSuffix(v string) predicate.Message {
 	return predicate.Message(func(s *sql.Selector) {
-		s.Where(sql.HasSuffix(s.C(FieldBody), v))
+		s.Where(sql.HasSuffix(s.C(FieldContent), v))
 	})
 }
 
-// BodyEqualFold applies the EqualFold predicate on the "body" field.
-func BodyEqualFold(v string) predicate.Message {
+// ContentEqualFold applies the EqualFold predicate on the "content" field.
+func ContentEqualFold(v string) predicate.Message {
 	return predicate.Message(func(s *sql.Selector) {
-		s.Where(sql.EqualFold(s.C(FieldBody), v))
+		s.Where(sql.EqualFold(s.C(FieldContent), v))
 	})
 }
 
-// BodyContainsFold applies the ContainsFold predicate on the "body" field.
-func BodyContainsFold(v string) predicate.Message {
+// ContentContainsFold applies the ContainsFold predicate on the "content" field.
+func ContentContainsFold(v string) predicate.Message {
 	return predicate.Message(func(s *sql.Selector) {
-		s.Where(sql.ContainsFold(s.C(FieldBody), v))
+		s.Where(sql.ContainsFold(s.C(FieldContent), v))
 	})
 }
 

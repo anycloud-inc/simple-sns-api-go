@@ -24,16 +24,16 @@ type MessageCreate struct {
 	hooks    []Hook
 }
 
-// SetBody sets the "body" field.
-func (mc *MessageCreate) SetBody(s string) *MessageCreate {
-	mc.mutation.SetBody(s)
+// SetContent sets the "content" field.
+func (mc *MessageCreate) SetContent(s string) *MessageCreate {
+	mc.mutation.SetContent(s)
 	return mc
 }
 
-// SetNillableBody sets the "body" field if the given value is not nil.
-func (mc *MessageCreate) SetNillableBody(s *string) *MessageCreate {
+// SetNillableContent sets the "content" field if the given value is not nil.
+func (mc *MessageCreate) SetNillableContent(s *string) *MessageCreate {
 	if s != nil {
-		mc.SetBody(*s)
+		mc.SetContent(*s)
 	}
 	return mc
 }
@@ -91,6 +91,14 @@ func (mc *MessageCreate) SetUser(u *User) *MessageCreate {
 // SetPostID sets the "post" edge to the Post entity by ID.
 func (mc *MessageCreate) SetPostID(id int) *MessageCreate {
 	mc.mutation.SetPostID(id)
+	return mc
+}
+
+// SetNillablePostID sets the "post" edge to the Post entity by ID if the given value is not nil.
+func (mc *MessageCreate) SetNillablePostID(id *int) *MessageCreate {
+	if id != nil {
+		mc = mc.SetPostID(*id)
+	}
 	return mc
 }
 
@@ -176,9 +184,9 @@ func (mc *MessageCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (mc *MessageCreate) defaults() {
-	if _, ok := mc.mutation.Body(); !ok {
-		v := message.DefaultBody
-		mc.mutation.SetBody(v)
+	if _, ok := mc.mutation.Content(); !ok {
+		v := message.DefaultContent
+		mc.mutation.SetContent(v)
 	}
 	if _, ok := mc.mutation.CreatedAt(); !ok {
 		v := message.DefaultCreatedAt()
@@ -192,12 +200,12 @@ func (mc *MessageCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (mc *MessageCreate) check() error {
-	if _, ok := mc.mutation.Body(); !ok {
-		return &ValidationError{Name: "body", err: errors.New(`ent: missing required field "Message.body"`)}
+	if _, ok := mc.mutation.Content(); !ok {
+		return &ValidationError{Name: "content", err: errors.New(`ent: missing required field "Message.content"`)}
 	}
-	if v, ok := mc.mutation.Body(); ok {
-		if err := message.BodyValidator(v); err != nil {
-			return &ValidationError{Name: "body", err: fmt.Errorf(`ent: validator failed for field "Message.body": %w`, err)}
+	if v, ok := mc.mutation.Content(); ok {
+		if err := message.ContentValidator(v); err != nil {
+			return &ValidationError{Name: "content", err: fmt.Errorf(`ent: validator failed for field "Message.content": %w`, err)}
 		}
 	}
 	if _, ok := mc.mutation.CreatedAt(); !ok {
@@ -211,9 +219,6 @@ func (mc *MessageCreate) check() error {
 	}
 	if _, ok := mc.mutation.UserID(); !ok {
 		return &ValidationError{Name: "user", err: errors.New(`ent: missing required edge "Message.user"`)}
-	}
-	if _, ok := mc.mutation.PostID(); !ok {
-		return &ValidationError{Name: "post", err: errors.New(`ent: missing required edge "Message.post"`)}
 	}
 	return nil
 }
@@ -242,13 +247,13 @@ func (mc *MessageCreate) createSpec() (*Message, *sqlgraph.CreateSpec) {
 			},
 		}
 	)
-	if value, ok := mc.mutation.Body(); ok {
+	if value, ok := mc.mutation.Content(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
-			Column: message.FieldBody,
+			Column: message.FieldContent,
 		})
-		_node.Body = value
+		_node.Content = value
 	}
 	if value, ok := mc.mutation.CreatedAt(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
