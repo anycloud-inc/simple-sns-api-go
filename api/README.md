@@ -15,8 +15,8 @@ gotest -v ./...
 go run -mod=mod entgo.io/ent/cmd/ent init [EntityName]
 
 # スキーマの変更
-vim ./src/ent/schema/[entity_name].go
+vim ./ent/schema/[entity_name].go
 
 # ファイルの自動生成
-go generate ./src/ent
+go generate ./ent
 ```

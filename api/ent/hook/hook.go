@@ -5,7 +5,7 @@ package hook
 import (
 	"context"
 	"fmt"
-	"simple_sns_api/src/ent"
+	"simple_sns_api/ent"
 )
 
 // The PostFunc type is an adapter to allow the use of ordinary

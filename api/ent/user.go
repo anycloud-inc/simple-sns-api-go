@@ -4,7 +4,7 @@ package ent
 
 import (
 	"fmt"
-	"simple_sns_api/src/ent/user"
+	"simple_sns_api/ent/user"
 	"strings"
 
 	"entgo.io/ent/dialect/sql"

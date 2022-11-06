@@ -3,9 +3,9 @@
 package ent
 
 import (
-	"simple_sns_api/src/ent/post"
-	"simple_sns_api/src/ent/schema"
-	"simple_sns_api/src/ent/user"
+	"simple_sns_api/ent/post"
+	"simple_sns_api/ent/schema"
+	"simple_sns_api/ent/user"
 )
 
 // The init function reads all schema descriptors with runtime code

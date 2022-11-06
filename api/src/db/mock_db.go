@@ -2,7 +2,7 @@ package db
 
 import (
 	"context"
-	"simple_sns_api/src/ent/enttest"
+	"simple_sns_api/ent/enttest"
 	"testing"
 
 	_ "github.com/mattn/go-sqlite3"

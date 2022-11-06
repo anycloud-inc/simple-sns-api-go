@@ -5,53 +5,53 @@ package ent
 import (
 	"context"
 	"fmt"
-	"simple_sns_api/src/ent/post"
-	"simple_sns_api/src/ent/predicate"
+	"simple_sns_api/ent/predicate"
+	"simple_sns_api/ent/user"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 )
 
-// PostDelete is the builder for deleting a Post entity.
-type PostDelete struct {
+// UserDelete is the builder for deleting a User entity.
+type UserDelete struct {
 	config
 	hooks    []Hook
-	mutation *PostMutation
+	mutation *UserMutation
 }
 
-// Where appends a list predicates to the PostDelete builder.
-func (pd *PostDelete) Where(ps ...predicate.Post) *PostDelete {
-	pd.mutation.Where(ps...)
-	return pd
+// Where appends a list predicates to the UserDelete builder.
+func (ud *UserDelete) Where(ps ...predicate.User) *UserDelete {
+	ud.mutation.Where(ps...)
+	return ud
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (pd *PostDelete) Exec(ctx context.Context) (int, error) {
+func (ud *UserDelete) Exec(ctx context.Context) (int, error) {
 	var (
 		err      error
 		affected int
 	)
-	if len(pd.hooks) == 0 {
-		affected, err = pd.sqlExec(ctx)
+	if len(ud.hooks) == 0 {
+		affected, err = ud.sqlExec(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
-			mutation, ok := m.(*PostMutation)
+			mutation, ok := m.(*UserMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
 			}
-			pd.mutation = mutation
-			affected, err = pd.sqlExec(ctx)
+			ud.mutation = mutation
+			affected, err = ud.sqlExec(ctx)
 			mutation.done = true
 			return affected, err
 		})
-		for i := len(pd.hooks) - 1; i >= 0; i-- {
-			if pd.hooks[i] == nil {
+		for i := len(ud.hooks) - 1; i >= 0; i-- {
+			if ud.hooks[i] == nil {
 				return 0, fmt.Errorf("ent: uninitialized hook (forgotten import ent/runtime?)")
 			}
-			mut = pd.hooks[i](mut)
+			mut = ud.hooks[i](mut)
 		}
-		if _, err := mut.Mutate(ctx, pd.mutation); err != nil {
+		if _, err := mut.Mutate(ctx, ud.mutation); err != nil {
 			return 0, err
 		}
 	}
@@ -59,57 +59,57 @@ func (pd *PostDelete) Exec(ctx context.Context) (int, error) {
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (pd *PostDelete) ExecX(ctx context.Context) int {
-	n, err := pd.Exec(ctx)
+func (ud *UserDelete) ExecX(ctx context.Context) int {
+	n, err := ud.Exec(ctx)
 	if err != nil {
 		panic(err)
 	}
 	return n
 }
 
-func (pd *PostDelete) sqlExec(ctx context.Context) (int, error) {
+func (ud *UserDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := &sqlgraph.DeleteSpec{
 		Node: &sqlgraph.NodeSpec{
-			Table: post.Table,
+			Table: user.Table,
 			ID: &sqlgraph.FieldSpec{
 				Type:   field.TypeInt,
-				Column: post.FieldID,
+				Column: user.FieldID,
 			},
 		},
 	}
-	if ps := pd.mutation.predicates; len(ps) > 0 {
+	if ps := ud.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	affected, err := sqlgraph.DeleteNodes(ctx, pd.driver, _spec)
+	affected, err := sqlgraph.DeleteNodes(ctx, ud.driver, _spec)
 	if err != nil && sqlgraph.IsConstraintError(err) {
 		err = &ConstraintError{msg: err.Error(), wrap: err}
 	}
 	return affected, err
 }
 
-// PostDeleteOne is the builder for deleting a single Post entity.
-type PostDeleteOne struct {
-	pd *PostDelete
+// UserDeleteOne is the builder for deleting a single User entity.
+type UserDeleteOne struct {
+	ud *UserDelete
 }
 
 // Exec executes the deletion query.
-func (pdo *PostDeleteOne) Exec(ctx context.Context) error {
-	n, err := pdo.pd.Exec(ctx)
+func (udo *UserDeleteOne) Exec(ctx context.Context) error {
+	n, err := udo.ud.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
 	case n == 0:
-		return &NotFoundError{post.Label}
+		return &NotFoundError{user.Label}
 	default:
 		return nil
 	}
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (pdo *PostDeleteOne) ExecX(ctx context.Context) {
-	pdo.pd.ExecX(ctx)
+func (udo *UserDeleteOne) ExecX(ctx context.Context) {
+	udo.ud.ExecX(ctx)
 }

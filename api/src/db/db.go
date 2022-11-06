@@ -3,7 +3,7 @@ package db
 import (
 	"context"
 	"log"
-	"simple_sns_api/src/ent"
+	"simple_sns_api/ent"
 )
 
 var (
