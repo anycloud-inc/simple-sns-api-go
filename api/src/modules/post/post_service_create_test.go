@@ -2,8 +2,8 @@ package post
 
 import (
 	"context"
+	"simple_sns_api/ent"
 	"simple_sns_api/src/db"
-	"simple_sns_api/src/ent"
 	"simple_sns_api/src/modules/account"
 	"testing"
 )

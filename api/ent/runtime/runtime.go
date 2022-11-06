@@ -2,7 +2,7 @@
 
 package runtime
 
-// The schema-stitching logic is generated in simple_sns_api/src/ent/runtime.go
+// The schema-stitching logic is generated in simple_sns_api/ent/runtime.go
 
 const (
 	Version = "v0.11.3"                                         // Version of ent codegen.

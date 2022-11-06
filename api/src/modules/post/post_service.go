@@ -2,9 +2,9 @@ package post
 
 import (
 	"context"
+	"simple_sns_api/ent"
+	"simple_sns_api/ent/post"
 	"simple_sns_api/src/db"
-	"simple_sns_api/src/ent"
-	"simple_sns_api/src/ent/post"
 )
 
 type PostService struct{}

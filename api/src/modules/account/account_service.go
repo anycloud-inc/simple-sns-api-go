@@ -6,9 +6,9 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"simple_sns_api/ent"
+	"simple_sns_api/ent/user"
 	"simple_sns_api/src/db"
-	"simple_sns_api/src/ent"
-	"simple_sns_api/src/ent/user"
 	"simple_sns_api/src/lib/auth"
 )
 

@@ -8,10 +8,10 @@ import (
 	"fmt"
 	"log"
 
-	"simple_sns_api/src/ent/migrate"
+	"simple_sns_api/ent/migrate"
 
-	"simple_sns_api/src/ent/post"
-	"simple_sns_api/src/ent/user"
+	"simple_sns_api/ent/post"
+	"simple_sns_api/ent/user"
 
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
