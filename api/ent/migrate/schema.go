@@ -11,10 +11,10 @@ var (
 	// MessagesColumns holds the columns for the "messages" table.
 	MessagesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "body", Type: field.TypeString, Default: ""},
+		{Name: "content", Type: field.TypeString, Default: ""},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "post_messages", Type: field.TypeInt},
+		{Name: "post_messages", Type: field.TypeInt, Nullable: true},
 		{Name: "room_messages", Type: field.TypeUUID},
 		{Name: "user_messages", Type: field.TypeInt},
 	}
@@ -28,7 +28,7 @@ var (
 				Symbol:     "messages_posts_messages",
 				Columns:    []*schema.Column{MessagesColumns[4]},
 				RefColumns: []*schema.Column{PostsColumns[0]},
-				OnDelete:   schema.NoAction,
+				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "messages_rooms_messages",

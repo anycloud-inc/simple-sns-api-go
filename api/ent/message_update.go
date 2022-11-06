@@ -32,16 +32,16 @@ func (mu *MessageUpdate) Where(ps ...predicate.Message) *MessageUpdate {
 	return mu
 }
 
-// SetBody sets the "body" field.
-func (mu *MessageUpdate) SetBody(s string) *MessageUpdate {
-	mu.mutation.SetBody(s)
+// SetContent sets the "content" field.
+func (mu *MessageUpdate) SetContent(s string) *MessageUpdate {
+	mu.mutation.SetContent(s)
 	return mu
 }
 
-// SetNillableBody sets the "body" field if the given value is not nil.
-func (mu *MessageUpdate) SetNillableBody(s *string) *MessageUpdate {
+// SetNillableContent sets the "content" field if the given value is not nil.
+func (mu *MessageUpdate) SetNillableContent(s *string) *MessageUpdate {
 	if s != nil {
-		mu.SetBody(*s)
+		mu.SetContent(*s)
 	}
 	return mu
 }
@@ -91,6 +91,14 @@ func (mu *MessageUpdate) SetUser(u *User) *MessageUpdate {
 // SetPostID sets the "post" edge to the Post entity by ID.
 func (mu *MessageUpdate) SetPostID(id int) *MessageUpdate {
 	mu.mutation.SetPostID(id)
+	return mu
+}
+
+// SetNillablePostID sets the "post" edge to the Post entity by ID if the given value is not nil.
+func (mu *MessageUpdate) SetNillablePostID(id *int) *MessageUpdate {
+	if id != nil {
+		mu = mu.SetPostID(*id)
+	}
 	return mu
 }
 
@@ -193,9 +201,9 @@ func (mu *MessageUpdate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (mu *MessageUpdate) check() error {
-	if v, ok := mu.mutation.Body(); ok {
-		if err := message.BodyValidator(v); err != nil {
-			return &ValidationError{Name: "body", err: fmt.Errorf(`ent: validator failed for field "Message.body": %w`, err)}
+	if v, ok := mu.mutation.Content(); ok {
+		if err := message.ContentValidator(v); err != nil {
+			return &ValidationError{Name: "content", err: fmt.Errorf(`ent: validator failed for field "Message.content": %w`, err)}
 		}
 	}
 	if _, ok := mu.mutation.RoomID(); mu.mutation.RoomCleared() && !ok {
@@ -203,9 +211,6 @@ func (mu *MessageUpdate) check() error {
 	}
 	if _, ok := mu.mutation.UserID(); mu.mutation.UserCleared() && !ok {
 		return errors.New(`ent: clearing a required unique edge "Message.user"`)
-	}
-	if _, ok := mu.mutation.PostID(); mu.mutation.PostCleared() && !ok {
-		return errors.New(`ent: clearing a required unique edge "Message.post"`)
 	}
 	return nil
 }
@@ -228,11 +233,11 @@ func (mu *MessageUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
-	if value, ok := mu.mutation.Body(); ok {
+	if value, ok := mu.mutation.Content(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
-			Column: message.FieldBody,
+			Column: message.FieldContent,
 		})
 	}
 	if value, ok := mu.mutation.CreatedAt(); ok {
@@ -373,16 +378,16 @@ type MessageUpdateOne struct {
 	mutation *MessageMutation
 }
 
-// SetBody sets the "body" field.
-func (muo *MessageUpdateOne) SetBody(s string) *MessageUpdateOne {
-	muo.mutation.SetBody(s)
+// SetContent sets the "content" field.
+func (muo *MessageUpdateOne) SetContent(s string) *MessageUpdateOne {
+	muo.mutation.SetContent(s)
 	return muo
 }
 
-// SetNillableBody sets the "body" field if the given value is not nil.
-func (muo *MessageUpdateOne) SetNillableBody(s *string) *MessageUpdateOne {
+// SetNillableContent sets the "content" field if the given value is not nil.
+func (muo *MessageUpdateOne) SetNillableContent(s *string) *MessageUpdateOne {
 	if s != nil {
-		muo.SetBody(*s)
+		muo.SetContent(*s)
 	}
 	return muo
 }
@@ -432,6 +437,14 @@ func (muo *MessageUpdateOne) SetUser(u *User) *MessageUpdateOne {
 // SetPostID sets the "post" edge to the Post entity by ID.
 func (muo *MessageUpdateOne) SetPostID(id int) *MessageUpdateOne {
 	muo.mutation.SetPostID(id)
+	return muo
+}
+
+// SetNillablePostID sets the "post" edge to the Post entity by ID if the given value is not nil.
+func (muo *MessageUpdateOne) SetNillablePostID(id *int) *MessageUpdateOne {
+	if id != nil {
+		muo = muo.SetPostID(*id)
+	}
 	return muo
 }
 
@@ -547,9 +560,9 @@ func (muo *MessageUpdateOne) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (muo *MessageUpdateOne) check() error {
-	if v, ok := muo.mutation.Body(); ok {
-		if err := message.BodyValidator(v); err != nil {
-			return &ValidationError{Name: "body", err: fmt.Errorf(`ent: validator failed for field "Message.body": %w`, err)}
+	if v, ok := muo.mutation.Content(); ok {
+		if err := message.ContentValidator(v); err != nil {
+			return &ValidationError{Name: "content", err: fmt.Errorf(`ent: validator failed for field "Message.content": %w`, err)}
 		}
 	}
 	if _, ok := muo.mutation.RoomID(); muo.mutation.RoomCleared() && !ok {
@@ -557,9 +570,6 @@ func (muo *MessageUpdateOne) check() error {
 	}
 	if _, ok := muo.mutation.UserID(); muo.mutation.UserCleared() && !ok {
 		return errors.New(`ent: clearing a required unique edge "Message.user"`)
-	}
-	if _, ok := muo.mutation.PostID(); muo.mutation.PostCleared() && !ok {
-		return errors.New(`ent: clearing a required unique edge "Message.post"`)
 	}
 	return nil
 }
@@ -599,11 +609,11 @@ func (muo *MessageUpdateOne) sqlSave(ctx context.Context) (_node *Message, err e
 			}
 		}
 	}
-	if value, ok := muo.mutation.Body(); ok {
+	if value, ok := muo.mutation.Content(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
-			Column: message.FieldBody,
+			Column: message.FieldContent,
 		})
 	}
 	if value, ok := muo.mutation.CreatedAt(); ok {

@@ -11,8 +11,8 @@ const (
 	Label = "message"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldBody holds the string denoting the body field in the database.
-	FieldBody = "body"
+	// FieldContent holds the string denoting the content field in the database.
+	FieldContent = "content"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
@@ -51,7 +51,7 @@ const (
 // Columns holds all SQL columns for message fields.
 var Columns = []string{
 	FieldID,
-	FieldBody,
+	FieldContent,
 	FieldCreatedAt,
 	FieldUpdatedAt,
 }
@@ -80,10 +80,10 @@ func ValidColumn(column string) bool {
 }
 
 var (
-	// DefaultBody holds the default value on creation for the "body" field.
-	DefaultBody string
-	// BodyValidator is a validator for the "body" field. It is called by the builders before save.
-	BodyValidator func(string) error
+	// DefaultContent holds the default value on creation for the "content" field.
+	DefaultContent string
+	// ContentValidator is a validator for the "content" field. It is called by the builders before save.
+	ContentValidator func(string) error
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
 	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.

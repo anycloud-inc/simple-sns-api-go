@@ -16,7 +16,7 @@ type Message struct {
 // Fields of the Message.
 func (Message) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("body").Default("").NotEmpty(),
+		field.String("content").Default("").NotEmpty(),
 		field.Time("created_at").Default(time.Now),
 		field.Time("updated_at").Default(time.Now).UpdateDefault(time.Now),
 	}
@@ -35,7 +35,6 @@ func (Message) Edges() []ent.Edge {
 			Required(),
 		edge.From("post", Post.Type).
 			Ref("messages").
-			Unique().
-			Required(),
+			Unique(),
 	}
 }

@@ -363,12 +363,12 @@ func (mq *MessageQuery) WithPost(opts ...func(*PostQuery)) *MessageQuery {
 // Example:
 //
 //	var v []struct {
-//		Body string `json:"body,omitempty"`
+//		Content string `json:"content,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Message.Query().
-//		GroupBy(message.FieldBody).
+//		GroupBy(message.FieldContent).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (mq *MessageQuery) GroupBy(field string, fields ...string) *MessageGroupBy {
@@ -391,11 +391,11 @@ func (mq *MessageQuery) GroupBy(field string, fields ...string) *MessageGroupBy 
 // Example:
 //
 //	var v []struct {
-//		Body string `json:"body,omitempty"`
+//		Content string `json:"content,omitempty"`
 //	}
 //
 //	client.Message.Query().
-//		Select(message.FieldBody).
+//		Select(message.FieldContent).
 //		Scan(ctx, &v)
 func (mq *MessageQuery) Select(fields ...string) *MessageSelect {
 	mq.fields = append(mq.fields, fields...)

@@ -20,12 +20,12 @@ import (
 func init() {
 	messageFields := schema.Message{}.Fields()
 	_ = messageFields
-	// messageDescBody is the schema descriptor for body field.
-	messageDescBody := messageFields[0].Descriptor()
-	// message.DefaultBody holds the default value on creation for the body field.
-	message.DefaultBody = messageDescBody.Default.(string)
-	// message.BodyValidator is a validator for the "body" field. It is called by the builders before save.
-	message.BodyValidator = messageDescBody.Validators[0].(func(string) error)
+	// messageDescContent is the schema descriptor for content field.
+	messageDescContent := messageFields[0].Descriptor()
+	// message.DefaultContent holds the default value on creation for the content field.
+	message.DefaultContent = messageDescContent.Default.(string)
+	// message.ContentValidator is a validator for the "content" field. It is called by the builders before save.
+	message.ContentValidator = messageDescContent.Validators[0].(func(string) error)
 	// messageDescCreatedAt is the schema descriptor for created_at field.
 	messageDescCreatedAt := messageFields[1].Descriptor()
 	// message.DefaultCreatedAt holds the default value on creation for the created_at field.
