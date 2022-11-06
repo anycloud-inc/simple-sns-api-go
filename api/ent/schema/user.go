@@ -3,6 +3,7 @@ package schema
 import (
 	"errors"
 	"net/mail"
+	"time"
 
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
@@ -21,6 +22,8 @@ func (User) Fields() []ent.Field {
 		field.String("email").NotEmpty().MaxLen(100).Validate(emailValidator),
 		field.String("password").NotEmpty().MaxLen(100),
 		field.String("iconImageUrl").Default(""),
+		field.Time("created_at").Default(time.Now),
+		field.Time("updated_at").Default(time.Now).UpdateDefault(time.Now),
 	}
 }
 
@@ -36,5 +39,7 @@ func emailValidator(s string) error {
 func (User) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("posts", Post.Type),
+		edge.To("roomUsers", RoomUser.Type),
+		edge.To("messages", Message.Type),
 	}
 }
