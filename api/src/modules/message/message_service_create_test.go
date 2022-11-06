@@ -1,9 +1,15 @@
 package message
 
 import (
+	"context"
 	"fmt"
+	"math/rand"
+	"simple_sns_api/ent"
 	"simple_sns_api/src/db"
+	"simple_sns_api/src/modules/account"
+	"strconv"
 	"testing"
+	"time"
 )
 
 func TestCreate(t *testing.T) {
@@ -28,4 +34,26 @@ func TestCreate(t *testing.T) {
 	if err == nil {
 		t.Error("Should Be Error When User Is Not In Room.")
 	}
+}
+
+func createAccountsX(ctx context.Context) (*ent.User, *ent.User) {
+	rand.Seed(time.Now().UnixNano())
+	random := strconv.Itoa(rand.Intn(100000))
+	user1, _, err := account.AccountService{}.Register(ctx, account.RegisterParams{
+		Name:     "Hoge" + random,
+		Email:    "hoge@example.com" + random,
+		Password: "password",
+	})
+	if err != nil {
+		panic(err)
+	}
+	user2, _, err := account.AccountService{}.Register(ctx, account.RegisterParams{
+		Name:     "Fuga" + random,
+		Email:    "fuga@example.com" + random,
+		Password: "password",
+	})
+	if err != nil {
+		panic(err)
+	}
+	return user1, user2
 }

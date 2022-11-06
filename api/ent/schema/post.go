@@ -19,6 +19,8 @@ func (Post) Fields() []ent.Field {
 		field.String("body").Default("").NotEmpty().MaxLen((500)),
 		field.Time("created_at").Default(time.Now),
 		field.Time("updated_at").Default(time.Now).UpdateDefault(time.Now),
+		// association fields
+		field.Int("user_id"),
 	}
 }
 
@@ -26,6 +28,7 @@ func (Post) Fields() []ent.Field {
 func (Post) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("user", User.Type).
+			Field("user_id").
 			Ref("posts").
 			Unique().
 			Required(),

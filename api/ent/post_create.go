@@ -64,9 +64,9 @@ func (pc *PostCreate) SetNillableUpdatedAt(t *time.Time) *PostCreate {
 	return pc
 }
 
-// SetUserID sets the "user" edge to the User entity by ID.
-func (pc *PostCreate) SetUserID(id int) *PostCreate {
-	pc.mutation.SetUserID(id)
+// SetUserID sets the "user_id" field.
+func (pc *PostCreate) SetUserID(i int) *PostCreate {
+	pc.mutation.SetUserID(i)
 	return pc
 }
 
@@ -198,6 +198,9 @@ func (pc *PostCreate) check() error {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "Post.updated_at"`)}
 	}
 	if _, ok := pc.mutation.UserID(); !ok {
+		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "Post.user_id"`)}
+	}
+	if _, ok := pc.mutation.UserID(); !ok {
 		return &ValidationError{Name: "user", err: errors.New(`ent: missing required edge "Post.user"`)}
 	}
 	return nil
@@ -268,7 +271,7 @@ func (pc *PostCreate) createSpec() (*Post, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.user_posts = &nodes[0]
+		_node.UserID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := pc.mutation.MessagesIDs(); len(nodes) > 0 {
