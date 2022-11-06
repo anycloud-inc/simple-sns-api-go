@@ -6,9 +6,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"simple_sns_api/ent/message"
 	"simple_sns_api/ent/post"
 	"simple_sns_api/ent/predicate"
 	"simple_sns_api/ent/user"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -42,6 +44,26 @@ func (pu *PostUpdate) SetNillableBody(s *string) *PostUpdate {
 	return pu
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (pu *PostUpdate) SetCreatedAt(t time.Time) *PostUpdate {
+	pu.mutation.SetCreatedAt(t)
+	return pu
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (pu *PostUpdate) SetNillableCreatedAt(t *time.Time) *PostUpdate {
+	if t != nil {
+		pu.SetCreatedAt(*t)
+	}
+	return pu
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (pu *PostUpdate) SetUpdatedAt(t time.Time) *PostUpdate {
+	pu.mutation.SetUpdatedAt(t)
+	return pu
+}
+
 // SetUserID sets the "user" edge to the User entity by ID.
 func (pu *PostUpdate) SetUserID(id int) *PostUpdate {
 	pu.mutation.SetUserID(id)
@@ -51,6 +73,21 @@ func (pu *PostUpdate) SetUserID(id int) *PostUpdate {
 // SetUser sets the "user" edge to the User entity.
 func (pu *PostUpdate) SetUser(u *User) *PostUpdate {
 	return pu.SetUserID(u.ID)
+}
+
+// AddMessageIDs adds the "messages" edge to the Message entity by IDs.
+func (pu *PostUpdate) AddMessageIDs(ids ...int) *PostUpdate {
+	pu.mutation.AddMessageIDs(ids...)
+	return pu
+}
+
+// AddMessages adds the "messages" edges to the Message entity.
+func (pu *PostUpdate) AddMessages(m ...*Message) *PostUpdate {
+	ids := make([]int, len(m))
+	for i := range m {
+		ids[i] = m[i].ID
+	}
+	return pu.AddMessageIDs(ids...)
 }
 
 // Mutation returns the PostMutation object of the builder.
@@ -64,12 +101,34 @@ func (pu *PostUpdate) ClearUser() *PostUpdate {
 	return pu
 }
 
+// ClearMessages clears all "messages" edges to the Message entity.
+func (pu *PostUpdate) ClearMessages() *PostUpdate {
+	pu.mutation.ClearMessages()
+	return pu
+}
+
+// RemoveMessageIDs removes the "messages" edge to Message entities by IDs.
+func (pu *PostUpdate) RemoveMessageIDs(ids ...int) *PostUpdate {
+	pu.mutation.RemoveMessageIDs(ids...)
+	return pu
+}
+
+// RemoveMessages removes "messages" edges to Message entities.
+func (pu *PostUpdate) RemoveMessages(m ...*Message) *PostUpdate {
+	ids := make([]int, len(m))
+	for i := range m {
+		ids[i] = m[i].ID
+	}
+	return pu.RemoveMessageIDs(ids...)
+}
+
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (pu *PostUpdate) Save(ctx context.Context) (int, error) {
 	var (
 		err      error
 		affected int
 	)
+	pu.defaults()
 	if len(pu.hooks) == 0 {
 		if err = pu.check(); err != nil {
 			return 0, err
@@ -124,6 +183,14 @@ func (pu *PostUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (pu *PostUpdate) defaults() {
+	if _, ok := pu.mutation.UpdatedAt(); !ok {
+		v := post.UpdateDefaultUpdatedAt()
+		pu.mutation.SetUpdatedAt(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (pu *PostUpdate) check() error {
 	if v, ok := pu.mutation.Body(); ok {
@@ -162,6 +229,20 @@ func (pu *PostUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: post.FieldBody,
 		})
 	}
+	if value, ok := pu.mutation.CreatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: post.FieldCreatedAt,
+		})
+	}
+	if value, ok := pu.mutation.UpdatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: post.FieldUpdatedAt,
+		})
+	}
 	if pu.mutation.UserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
@@ -189,6 +270,60 @@ func (pu *PostUpdate) sqlSave(ctx context.Context) (n int, err error) {
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
 					Column: user.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if pu.mutation.MessagesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   post.MessagesTable,
+			Columns: []string{post.MessagesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: message.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := pu.mutation.RemovedMessagesIDs(); len(nodes) > 0 && !pu.mutation.MessagesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   post.MessagesTable,
+			Columns: []string{post.MessagesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: message.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := pu.mutation.MessagesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   post.MessagesTable,
+			Columns: []string{post.MessagesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: message.FieldID,
 				},
 			},
 		}
@@ -230,6 +365,26 @@ func (puo *PostUpdateOne) SetNillableBody(s *string) *PostUpdateOne {
 	return puo
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (puo *PostUpdateOne) SetCreatedAt(t time.Time) *PostUpdateOne {
+	puo.mutation.SetCreatedAt(t)
+	return puo
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (puo *PostUpdateOne) SetNillableCreatedAt(t *time.Time) *PostUpdateOne {
+	if t != nil {
+		puo.SetCreatedAt(*t)
+	}
+	return puo
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (puo *PostUpdateOne) SetUpdatedAt(t time.Time) *PostUpdateOne {
+	puo.mutation.SetUpdatedAt(t)
+	return puo
+}
+
 // SetUserID sets the "user" edge to the User entity by ID.
 func (puo *PostUpdateOne) SetUserID(id int) *PostUpdateOne {
 	puo.mutation.SetUserID(id)
@@ -241,6 +396,21 @@ func (puo *PostUpdateOne) SetUser(u *User) *PostUpdateOne {
 	return puo.SetUserID(u.ID)
 }
 
+// AddMessageIDs adds the "messages" edge to the Message entity by IDs.
+func (puo *PostUpdateOne) AddMessageIDs(ids ...int) *PostUpdateOne {
+	puo.mutation.AddMessageIDs(ids...)
+	return puo
+}
+
+// AddMessages adds the "messages" edges to the Message entity.
+func (puo *PostUpdateOne) AddMessages(m ...*Message) *PostUpdateOne {
+	ids := make([]int, len(m))
+	for i := range m {
+		ids[i] = m[i].ID
+	}
+	return puo.AddMessageIDs(ids...)
+}
+
 // Mutation returns the PostMutation object of the builder.
 func (puo *PostUpdateOne) Mutation() *PostMutation {
 	return puo.mutation
@@ -250,6 +420,27 @@ func (puo *PostUpdateOne) Mutation() *PostMutation {
 func (puo *PostUpdateOne) ClearUser() *PostUpdateOne {
 	puo.mutation.ClearUser()
 	return puo
+}
+
+// ClearMessages clears all "messages" edges to the Message entity.
+func (puo *PostUpdateOne) ClearMessages() *PostUpdateOne {
+	puo.mutation.ClearMessages()
+	return puo
+}
+
+// RemoveMessageIDs removes the "messages" edge to Message entities by IDs.
+func (puo *PostUpdateOne) RemoveMessageIDs(ids ...int) *PostUpdateOne {
+	puo.mutation.RemoveMessageIDs(ids...)
+	return puo
+}
+
+// RemoveMessages removes "messages" edges to Message entities.
+func (puo *PostUpdateOne) RemoveMessages(m ...*Message) *PostUpdateOne {
+	ids := make([]int, len(m))
+	for i := range m {
+		ids[i] = m[i].ID
+	}
+	return puo.RemoveMessageIDs(ids...)
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
@@ -265,6 +456,7 @@ func (puo *PostUpdateOne) Save(ctx context.Context) (*Post, error) {
 		err  error
 		node *Post
 	)
+	puo.defaults()
 	if len(puo.hooks) == 0 {
 		if err = puo.check(); err != nil {
 			return nil, err
@@ -325,6 +517,14 @@ func (puo *PostUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (puo *PostUpdateOne) defaults() {
+	if _, ok := puo.mutation.UpdatedAt(); !ok {
+		v := post.UpdateDefaultUpdatedAt()
+		puo.mutation.SetUpdatedAt(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (puo *PostUpdateOne) check() error {
 	if v, ok := puo.mutation.Body(); ok {
@@ -380,6 +580,20 @@ func (puo *PostUpdateOne) sqlSave(ctx context.Context) (_node *Post, err error) 
 			Column: post.FieldBody,
 		})
 	}
+	if value, ok := puo.mutation.CreatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: post.FieldCreatedAt,
+		})
+	}
+	if value, ok := puo.mutation.UpdatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: post.FieldUpdatedAt,
+		})
+	}
 	if puo.mutation.UserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
@@ -407,6 +621,60 @@ func (puo *PostUpdateOne) sqlSave(ctx context.Context) (_node *Post, err error) 
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
 					Column: user.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if puo.mutation.MessagesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   post.MessagesTable,
+			Columns: []string{post.MessagesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: message.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := puo.mutation.RemovedMessagesIDs(); len(nodes) > 0 && !puo.mutation.MessagesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   post.MessagesTable,
+			Columns: []string{post.MessagesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: message.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := puo.mutation.MessagesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   post.MessagesTable,
+			Columns: []string{post.MessagesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: message.FieldID,
 				},
 			},
 		}

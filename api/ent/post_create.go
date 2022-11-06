@@ -6,8 +6,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"simple_sns_api/ent/message"
 	"simple_sns_api/ent/post"
 	"simple_sns_api/ent/user"
+	"time"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -34,6 +36,34 @@ func (pc *PostCreate) SetNillableBody(s *string) *PostCreate {
 	return pc
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (pc *PostCreate) SetCreatedAt(t time.Time) *PostCreate {
+	pc.mutation.SetCreatedAt(t)
+	return pc
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (pc *PostCreate) SetNillableCreatedAt(t *time.Time) *PostCreate {
+	if t != nil {
+		pc.SetCreatedAt(*t)
+	}
+	return pc
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (pc *PostCreate) SetUpdatedAt(t time.Time) *PostCreate {
+	pc.mutation.SetUpdatedAt(t)
+	return pc
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (pc *PostCreate) SetNillableUpdatedAt(t *time.Time) *PostCreate {
+	if t != nil {
+		pc.SetUpdatedAt(*t)
+	}
+	return pc
+}
+
 // SetUserID sets the "user" edge to the User entity by ID.
 func (pc *PostCreate) SetUserID(id int) *PostCreate {
 	pc.mutation.SetUserID(id)
@@ -43,6 +73,21 @@ func (pc *PostCreate) SetUserID(id int) *PostCreate {
 // SetUser sets the "user" edge to the User entity.
 func (pc *PostCreate) SetUser(u *User) *PostCreate {
 	return pc.SetUserID(u.ID)
+}
+
+// AddMessageIDs adds the "messages" edge to the Message entity by IDs.
+func (pc *PostCreate) AddMessageIDs(ids ...int) *PostCreate {
+	pc.mutation.AddMessageIDs(ids...)
+	return pc
+}
+
+// AddMessages adds the "messages" edges to the Message entity.
+func (pc *PostCreate) AddMessages(m ...*Message) *PostCreate {
+	ids := make([]int, len(m))
+	for i := range m {
+		ids[i] = m[i].ID
+	}
+	return pc.AddMessageIDs(ids...)
 }
 
 // Mutation returns the PostMutation object of the builder.
@@ -126,6 +171,14 @@ func (pc *PostCreate) defaults() {
 		v := post.DefaultBody
 		pc.mutation.SetBody(v)
 	}
+	if _, ok := pc.mutation.CreatedAt(); !ok {
+		v := post.DefaultCreatedAt()
+		pc.mutation.SetCreatedAt(v)
+	}
+	if _, ok := pc.mutation.UpdatedAt(); !ok {
+		v := post.DefaultUpdatedAt()
+		pc.mutation.SetUpdatedAt(v)
+	}
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -137,6 +190,12 @@ func (pc *PostCreate) check() error {
 		if err := post.BodyValidator(v); err != nil {
 			return &ValidationError{Name: "body", err: fmt.Errorf(`ent: validator failed for field "Post.body": %w`, err)}
 		}
+	}
+	if _, ok := pc.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Post.created_at"`)}
+	}
+	if _, ok := pc.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "Post.updated_at"`)}
 	}
 	if _, ok := pc.mutation.UserID(); !ok {
 		return &ValidationError{Name: "user", err: errors.New(`ent: missing required edge "Post.user"`)}
@@ -176,6 +235,22 @@ func (pc *PostCreate) createSpec() (*Post, *sqlgraph.CreateSpec) {
 		})
 		_node.Body = value
 	}
+	if value, ok := pc.mutation.CreatedAt(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: post.FieldCreatedAt,
+		})
+		_node.CreatedAt = value
+	}
+	if value, ok := pc.mutation.UpdatedAt(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: post.FieldUpdatedAt,
+		})
+		_node.UpdatedAt = value
+	}
 	if nodes := pc.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
@@ -194,6 +269,25 @@ func (pc *PostCreate) createSpec() (*Post, *sqlgraph.CreateSpec) {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.user_posts = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := pc.mutation.MessagesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   post.MessagesTable,
+			Columns: []string{post.MessagesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: message.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

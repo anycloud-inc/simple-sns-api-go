@@ -4,8 +4,10 @@ package ent
 
 import (
 	"context"
+	"database/sql/driver"
 	"fmt"
 	"math"
+	"simple_sns_api/ent/message"
 	"simple_sns_api/ent/post"
 	"simple_sns_api/ent/predicate"
 	"simple_sns_api/ent/user"
@@ -18,14 +20,15 @@ import (
 // PostQuery is the builder for querying Post entities.
 type PostQuery struct {
 	config
-	limit      *int
-	offset     *int
-	unique     *bool
-	order      []OrderFunc
-	fields     []string
-	predicates []predicate.Post
-	withUser   *UserQuery
-	withFKs    bool
+	limit        *int
+	offset       *int
+	unique       *bool
+	order        []OrderFunc
+	fields       []string
+	predicates   []predicate.Post
+	withUser     *UserQuery
+	withMessages *MessageQuery
+	withFKs      bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -77,6 +80,28 @@ func (pq *PostQuery) QueryUser() *UserQuery {
 			sqlgraph.From(post.Table, post.FieldID, selector),
 			sqlgraph.To(user.Table, user.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, post.UserTable, post.UserColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(pq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryMessages chains the current query on the "messages" edge.
+func (pq *PostQuery) QueryMessages() *MessageQuery {
+	query := &MessageQuery{config: pq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := pq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := pq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(post.Table, post.FieldID, selector),
+			sqlgraph.To(message.Table, message.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, post.MessagesTable, post.MessagesColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(pq.driver.Dialect(), step)
 		return fromU, nil
@@ -260,12 +285,13 @@ func (pq *PostQuery) Clone() *PostQuery {
 		return nil
 	}
 	return &PostQuery{
-		config:     pq.config,
-		limit:      pq.limit,
-		offset:     pq.offset,
-		order:      append([]OrderFunc{}, pq.order...),
-		predicates: append([]predicate.Post{}, pq.predicates...),
-		withUser:   pq.withUser.Clone(),
+		config:       pq.config,
+		limit:        pq.limit,
+		offset:       pq.offset,
+		order:        append([]OrderFunc{}, pq.order...),
+		predicates:   append([]predicate.Post{}, pq.predicates...),
+		withUser:     pq.withUser.Clone(),
+		withMessages: pq.withMessages.Clone(),
 		// clone intermediate query.
 		sql:    pq.sql.Clone(),
 		path:   pq.path,
@@ -281,6 +307,17 @@ func (pq *PostQuery) WithUser(opts ...func(*UserQuery)) *PostQuery {
 		opt(query)
 	}
 	pq.withUser = query
+	return pq
+}
+
+// WithMessages tells the query-builder to eager-load the nodes that are connected to
+// the "messages" edge. The optional arguments are used to configure the query builder of the edge.
+func (pq *PostQuery) WithMessages(opts ...func(*MessageQuery)) *PostQuery {
+	query := &MessageQuery{config: pq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	pq.withMessages = query
 	return pq
 }
 
@@ -353,8 +390,9 @@ func (pq *PostQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Post, e
 		nodes       = []*Post{}
 		withFKs     = pq.withFKs
 		_spec       = pq.querySpec()
-		loadedTypes = [1]bool{
+		loadedTypes = [2]bool{
 			pq.withUser != nil,
+			pq.withMessages != nil,
 		}
 	)
 	if pq.withUser != nil {
@@ -387,6 +425,13 @@ func (pq *PostQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Post, e
 			return nil, err
 		}
 	}
+	if query := pq.withMessages; query != nil {
+		if err := pq.loadMessages(ctx, query, nodes,
+			func(n *Post) { n.Edges.Messages = []*Message{} },
+			func(n *Post, e *Message) { n.Edges.Messages = append(n.Edges.Messages, e) }); err != nil {
+			return nil, err
+		}
+	}
 	return nodes, nil
 }
 
@@ -416,6 +461,37 @@ func (pq *PostQuery) loadUser(ctx context.Context, query *UserQuery, nodes []*Po
 		for i := range nodes {
 			assign(nodes[i], n)
 		}
+	}
+	return nil
+}
+func (pq *PostQuery) loadMessages(ctx context.Context, query *MessageQuery, nodes []*Post, init func(*Post), assign func(*Post, *Message)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*Post)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.Message(func(s *sql.Selector) {
+		s.Where(sql.InValues(post.MessagesColumn, fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.post_messages
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "post_messages" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "post_messages" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
 	}
 	return nil
 }

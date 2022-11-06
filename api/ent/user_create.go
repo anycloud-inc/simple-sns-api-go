@@ -6,8 +6,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"simple_sns_api/ent/message"
 	"simple_sns_api/ent/post"
+	"simple_sns_api/ent/roomuser"
 	"simple_sns_api/ent/user"
+	"time"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -52,6 +55,34 @@ func (uc *UserCreate) SetNillableIconImageUrl(s *string) *UserCreate {
 	return uc
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (uc *UserCreate) SetCreatedAt(t time.Time) *UserCreate {
+	uc.mutation.SetCreatedAt(t)
+	return uc
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (uc *UserCreate) SetNillableCreatedAt(t *time.Time) *UserCreate {
+	if t != nil {
+		uc.SetCreatedAt(*t)
+	}
+	return uc
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (uc *UserCreate) SetUpdatedAt(t time.Time) *UserCreate {
+	uc.mutation.SetUpdatedAt(t)
+	return uc
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (uc *UserCreate) SetNillableUpdatedAt(t *time.Time) *UserCreate {
+	if t != nil {
+		uc.SetUpdatedAt(*t)
+	}
+	return uc
+}
+
 // AddPostIDs adds the "posts" edge to the Post entity by IDs.
 func (uc *UserCreate) AddPostIDs(ids ...int) *UserCreate {
 	uc.mutation.AddPostIDs(ids...)
@@ -65,6 +96,36 @@ func (uc *UserCreate) AddPosts(p ...*Post) *UserCreate {
 		ids[i] = p[i].ID
 	}
 	return uc.AddPostIDs(ids...)
+}
+
+// AddRoomUserIDs adds the "roomUsers" edge to the RoomUser entity by IDs.
+func (uc *UserCreate) AddRoomUserIDs(ids ...int) *UserCreate {
+	uc.mutation.AddRoomUserIDs(ids...)
+	return uc
+}
+
+// AddRoomUsers adds the "roomUsers" edges to the RoomUser entity.
+func (uc *UserCreate) AddRoomUsers(r ...*RoomUser) *UserCreate {
+	ids := make([]int, len(r))
+	for i := range r {
+		ids[i] = r[i].ID
+	}
+	return uc.AddRoomUserIDs(ids...)
+}
+
+// AddMessageIDs adds the "messages" edge to the Message entity by IDs.
+func (uc *UserCreate) AddMessageIDs(ids ...int) *UserCreate {
+	uc.mutation.AddMessageIDs(ids...)
+	return uc
+}
+
+// AddMessages adds the "messages" edges to the Message entity.
+func (uc *UserCreate) AddMessages(m ...*Message) *UserCreate {
+	ids := make([]int, len(m))
+	for i := range m {
+		ids[i] = m[i].ID
+	}
+	return uc.AddMessageIDs(ids...)
 }
 
 // Mutation returns the UserMutation object of the builder.
@@ -148,6 +209,14 @@ func (uc *UserCreate) defaults() {
 		v := user.DefaultIconImageUrl
 		uc.mutation.SetIconImageUrl(v)
 	}
+	if _, ok := uc.mutation.CreatedAt(); !ok {
+		v := user.DefaultCreatedAt()
+		uc.mutation.SetCreatedAt(v)
+	}
+	if _, ok := uc.mutation.UpdatedAt(); !ok {
+		v := user.DefaultUpdatedAt()
+		uc.mutation.SetUpdatedAt(v)
+	}
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -178,6 +247,12 @@ func (uc *UserCreate) check() error {
 	}
 	if _, ok := uc.mutation.IconImageUrl(); !ok {
 		return &ValidationError{Name: "iconImageUrl", err: errors.New(`ent: missing required field "User.iconImageUrl"`)}
+	}
+	if _, ok := uc.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "User.created_at"`)}
+	}
+	if _, ok := uc.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "User.updated_at"`)}
 	}
 	return nil
 }
@@ -238,6 +313,22 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 		})
 		_node.IconImageUrl = value
 	}
+	if value, ok := uc.mutation.CreatedAt(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: user.FieldCreatedAt,
+		})
+		_node.CreatedAt = value
+	}
+	if value, ok := uc.mutation.UpdatedAt(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: user.FieldUpdatedAt,
+		})
+		_node.UpdatedAt = value
+	}
 	if nodes := uc.mutation.PostsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -249,6 +340,44 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
 					Column: post.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := uc.mutation.RoomUsersIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.RoomUsersTable,
+			Columns: []string{user.RoomUsersColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: roomuser.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := uc.mutation.MessagesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.MessagesTable,
+			Columns: []string{user.MessagesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: message.FieldID,
 				},
 			},
 		}

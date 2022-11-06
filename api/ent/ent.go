@@ -6,7 +6,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"simple_sns_api/ent/message"
 	"simple_sns_api/ent/post"
+	"simple_sns_api/ent/room"
+	"simple_sns_api/ent/roomuser"
 	"simple_sns_api/ent/user"
 
 	"entgo.io/ent"
@@ -32,8 +35,11 @@ type OrderFunc func(*sql.Selector)
 // columnChecker returns a function indicates if the column exists in the given column.
 func columnChecker(table string) func(string) error {
 	checks := map[string]func(string) bool{
-		post.Table: post.ValidColumn,
-		user.Table: user.ValidColumn,
+		message.Table:  message.ValidColumn,
+		post.Table:     post.ValidColumn,
+		room.Table:     room.ValidColumn,
+		roomuser.Table: roomuser.ValidColumn,
+		user.Table:     user.ValidColumn,
 	}
 	check, ok := checks[table]
 	if !ok {
