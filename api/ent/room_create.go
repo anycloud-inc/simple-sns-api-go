@@ -23,9 +23,9 @@ type RoomCreate struct {
 	hooks    []Hook
 }
 
-// SetUserIds sets the "userIds" field.
-func (rc *RoomCreate) SetUserIds(s string) *RoomCreate {
-	rc.mutation.SetUserIds(s)
+// SetUsersId sets the "usersId" field.
+func (rc *RoomCreate) SetUsersId(s string) *RoomCreate {
+	rc.mutation.SetUsersId(s)
 	return rc
 }
 
@@ -194,12 +194,12 @@ func (rc *RoomCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (rc *RoomCreate) check() error {
-	if _, ok := rc.mutation.UserIds(); !ok {
-		return &ValidationError{Name: "userIds", err: errors.New(`ent: missing required field "Room.userIds"`)}
+	if _, ok := rc.mutation.UsersId(); !ok {
+		return &ValidationError{Name: "usersId", err: errors.New(`ent: missing required field "Room.usersId"`)}
 	}
-	if v, ok := rc.mutation.UserIds(); ok {
-		if err := room.UserIdsValidator(v); err != nil {
-			return &ValidationError{Name: "userIds", err: fmt.Errorf(`ent: validator failed for field "Room.userIds": %w`, err)}
+	if v, ok := rc.mutation.UsersId(); ok {
+		if err := room.UsersIdValidator(v); err != nil {
+			return &ValidationError{Name: "usersId", err: fmt.Errorf(`ent: validator failed for field "Room.usersId": %w`, err)}
 		}
 	}
 	if _, ok := rc.mutation.CreatedAt(); !ok {
@@ -244,13 +244,13 @@ func (rc *RoomCreate) createSpec() (*Room, *sqlgraph.CreateSpec) {
 		_node.ID = id
 		_spec.ID.Value = &id
 	}
-	if value, ok := rc.mutation.UserIds(); ok {
+	if value, ok := rc.mutation.UsersId(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
-			Column: room.FieldUserIds,
+			Column: room.FieldUsersId,
 		})
-		_node.UserIds = value
+		_node.UsersId = value
 	}
 	if value, ok := rc.mutation.CreatedAt(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{

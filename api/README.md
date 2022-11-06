@@ -18,5 +18,5 @@ go run -mod=mod entgo.io/ent/cmd/ent init [EntityName]
 vim ./ent/schema/[entity_name].go
 
 # ファイルの自動生成
-go generate ./ent
+go run -mod=mod entgo.io/ent/cmd/ent generate --feature sql/execquery ./ent/schema
 ```

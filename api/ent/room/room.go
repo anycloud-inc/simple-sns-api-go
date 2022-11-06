@@ -13,8 +13,8 @@ const (
 	Label = "room"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldUserIds holds the string denoting the userids field in the database.
-	FieldUserIds = "user_ids"
+	// FieldUsersId holds the string denoting the usersid field in the database.
+	FieldUsersId = "users_id"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
@@ -44,7 +44,7 @@ const (
 // Columns holds all SQL columns for room fields.
 var Columns = []string{
 	FieldID,
-	FieldUserIds,
+	FieldUsersId,
 	FieldCreatedAt,
 	FieldUpdatedAt,
 }
@@ -60,8 +60,8 @@ func ValidColumn(column string) bool {
 }
 
 var (
-	// UserIdsValidator is a validator for the "userIds" field. It is called by the builders before save.
-	UserIdsValidator func(string) error
+	// UsersIdValidator is a validator for the "usersId" field. It is called by the builders before save.
+	UsersIdValidator func(string) error
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
 	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.

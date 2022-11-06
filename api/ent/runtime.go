@@ -70,10 +70,10 @@ func init() {
 	post.UpdateDefaultUpdatedAt = postDescUpdatedAt.UpdateDefault.(func() time.Time)
 	roomFields := schema.Room{}.Fields()
 	_ = roomFields
-	// roomDescUserIds is the schema descriptor for userIds field.
-	roomDescUserIds := roomFields[1].Descriptor()
-	// room.UserIdsValidator is a validator for the "userIds" field. It is called by the builders before save.
-	room.UserIdsValidator = roomDescUserIds.Validators[0].(func(string) error)
+	// roomDescUsersId is the schema descriptor for usersId field.
+	roomDescUsersId := roomFields[1].Descriptor()
+	// room.UsersIdValidator is a validator for the "usersId" field. It is called by the builders before save.
+	room.UsersIdValidator = roomDescUsersId.Validators[0].(func(string) error)
 	// roomDescCreatedAt is the schema descriptor for created_at field.
 	roomDescCreatedAt := roomFields[2].Descriptor()
 	// room.DefaultCreatedAt holds the default value on creation for the created_at field.

@@ -82,10 +82,10 @@ func IDLTE(id uuid.UUID) predicate.Room {
 	})
 }
 
-// UserIds applies equality check predicate on the "userIds" field. It's identical to UserIdsEQ.
-func UserIds(v string) predicate.Room {
+// UsersId applies equality check predicate on the "usersId" field. It's identical to UsersIdEQ.
+func UsersId(v string) predicate.Room {
 	return predicate.Room(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldUserIds), v))
+		s.Where(sql.EQ(s.C(FieldUsersId), v))
 	})
 }
 
@@ -103,102 +103,102 @@ func UpdatedAt(v time.Time) predicate.Room {
 	})
 }
 
-// UserIdsEQ applies the EQ predicate on the "userIds" field.
-func UserIdsEQ(v string) predicate.Room {
+// UsersIdEQ applies the EQ predicate on the "usersId" field.
+func UsersIdEQ(v string) predicate.Room {
 	return predicate.Room(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldUserIds), v))
+		s.Where(sql.EQ(s.C(FieldUsersId), v))
 	})
 }
 
-// UserIdsNEQ applies the NEQ predicate on the "userIds" field.
-func UserIdsNEQ(v string) predicate.Room {
+// UsersIdNEQ applies the NEQ predicate on the "usersId" field.
+func UsersIdNEQ(v string) predicate.Room {
 	return predicate.Room(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldUserIds), v))
+		s.Where(sql.NEQ(s.C(FieldUsersId), v))
 	})
 }
 
-// UserIdsIn applies the In predicate on the "userIds" field.
-func UserIdsIn(vs ...string) predicate.Room {
+// UsersIdIn applies the In predicate on the "usersId" field.
+func UsersIdIn(vs ...string) predicate.Room {
 	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.Room(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldUserIds), v...))
+		s.Where(sql.In(s.C(FieldUsersId), v...))
 	})
 }
 
-// UserIdsNotIn applies the NotIn predicate on the "userIds" field.
-func UserIdsNotIn(vs ...string) predicate.Room {
+// UsersIdNotIn applies the NotIn predicate on the "usersId" field.
+func UsersIdNotIn(vs ...string) predicate.Room {
 	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.Room(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldUserIds), v...))
+		s.Where(sql.NotIn(s.C(FieldUsersId), v...))
 	})
 }
 
-// UserIdsGT applies the GT predicate on the "userIds" field.
-func UserIdsGT(v string) predicate.Room {
+// UsersIdGT applies the GT predicate on the "usersId" field.
+func UsersIdGT(v string) predicate.Room {
 	return predicate.Room(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldUserIds), v))
+		s.Where(sql.GT(s.C(FieldUsersId), v))
 	})
 }
 
-// UserIdsGTE applies the GTE predicate on the "userIds" field.
-func UserIdsGTE(v string) predicate.Room {
+// UsersIdGTE applies the GTE predicate on the "usersId" field.
+func UsersIdGTE(v string) predicate.Room {
 	return predicate.Room(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldUserIds), v))
+		s.Where(sql.GTE(s.C(FieldUsersId), v))
 	})
 }
 
-// UserIdsLT applies the LT predicate on the "userIds" field.
-func UserIdsLT(v string) predicate.Room {
+// UsersIdLT applies the LT predicate on the "usersId" field.
+func UsersIdLT(v string) predicate.Room {
 	return predicate.Room(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldUserIds), v))
+		s.Where(sql.LT(s.C(FieldUsersId), v))
 	})
 }
 
-// UserIdsLTE applies the LTE predicate on the "userIds" field.
-func UserIdsLTE(v string) predicate.Room {
+// UsersIdLTE applies the LTE predicate on the "usersId" field.
+func UsersIdLTE(v string) predicate.Room {
 	return predicate.Room(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldUserIds), v))
+		s.Where(sql.LTE(s.C(FieldUsersId), v))
 	})
 }
 
-// UserIdsContains applies the Contains predicate on the "userIds" field.
-func UserIdsContains(v string) predicate.Room {
+// UsersIdContains applies the Contains predicate on the "usersId" field.
+func UsersIdContains(v string) predicate.Room {
 	return predicate.Room(func(s *sql.Selector) {
-		s.Where(sql.Contains(s.C(FieldUserIds), v))
+		s.Where(sql.Contains(s.C(FieldUsersId), v))
 	})
 }
 
-// UserIdsHasPrefix applies the HasPrefix predicate on the "userIds" field.
-func UserIdsHasPrefix(v string) predicate.Room {
+// UsersIdHasPrefix applies the HasPrefix predicate on the "usersId" field.
+func UsersIdHasPrefix(v string) predicate.Room {
 	return predicate.Room(func(s *sql.Selector) {
-		s.Where(sql.HasPrefix(s.C(FieldUserIds), v))
+		s.Where(sql.HasPrefix(s.C(FieldUsersId), v))
 	})
 }
 
-// UserIdsHasSuffix applies the HasSuffix predicate on the "userIds" field.
-func UserIdsHasSuffix(v string) predicate.Room {
+// UsersIdHasSuffix applies the HasSuffix predicate on the "usersId" field.
+func UsersIdHasSuffix(v string) predicate.Room {
 	return predicate.Room(func(s *sql.Selector) {
-		s.Where(sql.HasSuffix(s.C(FieldUserIds), v))
+		s.Where(sql.HasSuffix(s.C(FieldUsersId), v))
 	})
 }
 
-// UserIdsEqualFold applies the EqualFold predicate on the "userIds" field.
-func UserIdsEqualFold(v string) predicate.Room {
+// UsersIdEqualFold applies the EqualFold predicate on the "usersId" field.
+func UsersIdEqualFold(v string) predicate.Room {
 	return predicate.Room(func(s *sql.Selector) {
-		s.Where(sql.EqualFold(s.C(FieldUserIds), v))
+		s.Where(sql.EqualFold(s.C(FieldUsersId), v))
 	})
 }
 
-// UserIdsContainsFold applies the ContainsFold predicate on the "userIds" field.
-func UserIdsContainsFold(v string) predicate.Room {
+// UsersIdContainsFold applies the ContainsFold predicate on the "usersId" field.
+func UsersIdContainsFold(v string) predicate.Room {
 	return predicate.Room(func(s *sql.Selector) {
-		s.Where(sql.ContainsFold(s.C(FieldUserIds), v))
+		s.Where(sql.ContainsFold(s.C(FieldUsersId), v))
 	})
 }
 

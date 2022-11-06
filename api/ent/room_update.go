@@ -30,9 +30,9 @@ func (ru *RoomUpdate) Where(ps ...predicate.Room) *RoomUpdate {
 	return ru
 }
 
-// SetUserIds sets the "userIds" field.
-func (ru *RoomUpdate) SetUserIds(s string) *RoomUpdate {
-	ru.mutation.SetUserIds(s)
+// SetUsersId sets the "usersId" field.
+func (ru *RoomUpdate) SetUsersId(s string) *RoomUpdate {
+	ru.mutation.SetUsersId(s)
 	return ru
 }
 
@@ -204,9 +204,9 @@ func (ru *RoomUpdate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (ru *RoomUpdate) check() error {
-	if v, ok := ru.mutation.UserIds(); ok {
-		if err := room.UserIdsValidator(v); err != nil {
-			return &ValidationError{Name: "userIds", err: fmt.Errorf(`ent: validator failed for field "Room.userIds": %w`, err)}
+	if v, ok := ru.mutation.UsersId(); ok {
+		if err := room.UsersIdValidator(v); err != nil {
+			return &ValidationError{Name: "usersId", err: fmt.Errorf(`ent: validator failed for field "Room.usersId": %w`, err)}
 		}
 	}
 	return nil
@@ -230,11 +230,11 @@ func (ru *RoomUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
-	if value, ok := ru.mutation.UserIds(); ok {
+	if value, ok := ru.mutation.UsersId(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
-			Column: room.FieldUserIds,
+			Column: room.FieldUsersId,
 		})
 	}
 	if value, ok := ru.mutation.CreatedAt(); ok {
@@ -378,9 +378,9 @@ type RoomUpdateOne struct {
 	mutation *RoomMutation
 }
 
-// SetUserIds sets the "userIds" field.
-func (ruo *RoomUpdateOne) SetUserIds(s string) *RoomUpdateOne {
-	ruo.mutation.SetUserIds(s)
+// SetUsersId sets the "usersId" field.
+func (ruo *RoomUpdateOne) SetUsersId(s string) *RoomUpdateOne {
+	ruo.mutation.SetUsersId(s)
 	return ruo
 }
 
@@ -565,9 +565,9 @@ func (ruo *RoomUpdateOne) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (ruo *RoomUpdateOne) check() error {
-	if v, ok := ruo.mutation.UserIds(); ok {
-		if err := room.UserIdsValidator(v); err != nil {
-			return &ValidationError{Name: "userIds", err: fmt.Errorf(`ent: validator failed for field "Room.userIds": %w`, err)}
+	if v, ok := ruo.mutation.UsersId(); ok {
+		if err := room.UsersIdValidator(v); err != nil {
+			return &ValidationError{Name: "usersId", err: fmt.Errorf(`ent: validator failed for field "Room.usersId": %w`, err)}
 		}
 	}
 	return nil
@@ -608,11 +608,11 @@ func (ruo *RoomUpdateOne) sqlSave(ctx context.Context) (_node *Room, err error) 
 			}
 		}
 	}
-	if value, ok := ruo.mutation.UserIds(); ok {
+	if value, ok := ruo.mutation.UsersId(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
-			Column: room.FieldUserIds,
+			Column: room.FieldUsersId,
 		})
 	}
 	if value, ok := ruo.mutation.CreatedAt(); ok {
