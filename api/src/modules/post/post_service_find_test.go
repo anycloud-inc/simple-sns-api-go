@@ -2,6 +2,7 @@ package post
 
 import (
 	"simple_sns_api/src/db"
+	"simple_sns_api/src/lib/pagination"
 	"simple_sns_api/src/modules/account"
 	"testing"
 )
@@ -16,7 +17,7 @@ func TestFind(t *testing.T) {
 
 	PostService{}.Create(ctx, CreateParams{UserId: user.ID, Body: "Hoge"})
 	PostService{}.Create(ctx, CreateParams{UserId: user.ID, Body: "Fuga"})
-	posts, err := PostService{}.find(ctx, PaginationParams{Size: 1})
+	posts, err := PostService{}.Find(ctx, pagination.Params{Size: 1})
 	if err != nil {
 		t.Error(err)
 	}
@@ -29,7 +30,7 @@ func TestFind(t *testing.T) {
 	if posts[0].Edges.User.Name != "UserName" {
 		t.Error("Invalid User Name.")
 	}
-	posts, err = PostService{}.find(ctx, PaginationParams{Cursor: posts[0].ID, Size: 1})
+	posts, err = PostService{}.Find(ctx, pagination.Params{Cursor: posts[0].ID, Size: 1})
 	if err != nil {
 		t.Error(err)
 	}

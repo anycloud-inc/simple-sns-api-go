@@ -11,7 +11,7 @@ func TestDelete(t *testing.T) {
 
 	post, _ := PostService{}.Create(ctx, CreateParams{UserId: user.ID, Body: "PostBody"})
 	PostService{}.Delete(ctx, post.ID)
-	post, _ = PostService{}.findOne(ctx, post.ID)
+	post, _ = PostService{}.FindOne(ctx, post.ID)
 	if post != nil {
 		t.Error("Post should be deleted")
 	}

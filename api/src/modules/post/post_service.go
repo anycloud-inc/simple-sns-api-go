@@ -5,21 +5,17 @@ import (
 	"simple_sns_api/ent"
 	"simple_sns_api/ent/post"
 	"simple_sns_api/src/db"
+	"simple_sns_api/src/lib/pagination"
 )
 
 type PostService struct{}
-
-type PaginationParams struct {
-	Cursor int
-	Size   int
-}
 
 type CreateParams struct {
 	UserId int
 	Body   string
 }
 
-func (s PostService) find(ctx context.Context, pagination PaginationParams) ([]*ent.Post, error) {
+func (s PostService) Find(ctx context.Context, pagination pagination.Params) ([]*ent.Post, error) {
 	query := db.Client.Post.Query().WithUser()
 	if pagination.Cursor != 0 {
 		query = query.Where(post.IDLT(pagination.Cursor))
@@ -34,7 +30,7 @@ func (s PostService) find(ctx context.Context, pagination PaginationParams) ([]*
 	return posts, err
 }
 
-func (s PostService) findOne(ctx context.Context, id int) (*ent.Post, error) {
+func (s PostService) FindOne(ctx context.Context, id int) (*ent.Post, error) {
 	return db.Client.Post.Query().WithUser().Where(post.ID(id)).First(ctx)
 }
 
