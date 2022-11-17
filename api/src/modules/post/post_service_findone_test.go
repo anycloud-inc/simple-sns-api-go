@@ -15,7 +15,7 @@ func TestFindOne(t *testing.T) {
 	})
 
 	post, _ := PostService{}.Create(ctx, CreateParams{UserId: user.ID, Body: "PostBody"})
-	post, err = PostService{}.findOne(ctx, post.ID)
+	post, err = PostService{}.FindOne(ctx, post.ID)
 	if err != nil {
 		t.Error(err)
 	}

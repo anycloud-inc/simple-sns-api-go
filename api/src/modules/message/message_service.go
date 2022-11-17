@@ -3,15 +3,38 @@ package message
 import (
 	"context"
 	"simple_sns_api/ent"
+	"simple_sns_api/ent/message"
 	"simple_sns_api/ent/post"
 	"simple_sns_api/ent/roomuser"
 	"simple_sns_api/src/db"
+	"simple_sns_api/src/lib/pagination"
 	"simple_sns_api/src/modules/room"
 
 	"github.com/google/uuid"
 )
 
 type MessageService struct{}
+
+func (s MessageService) Find(ctx context.Context, roomId string, pagination pagination.Params) ([]*ent.Message, error) {
+	println(roomId)
+	roomUuid, err := uuid.Parse(roomId)
+	if err != nil {
+		return nil, err
+	}
+	query := db.Client.Message.Query().WithUser().WithPost()
+	if pagination.Cursor != 0 {
+		query = query.Where(message.IDLT(pagination.Cursor))
+	}
+	if pagination.Size == 0 {
+		pagination.Size = 20
+	}
+	messages, err := query.
+		Where(message.RoomIDEQ(roomUuid)).
+		Limit(pagination.Size).
+		Order(ent.Desc(message.FieldID)).
+		All(ctx)
+	return messages, err
+}
 
 type CreateParams struct {
 	UserId  int
